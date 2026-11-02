@@ -17,7 +17,7 @@ const nav = [
   { to: "/komisi", label: "Komisi", icon: Wallet, screen:14 },
 ] as const;
 
-export function AppShell({ title, subtitle, children, hideFab }: { title: string; subtitle?: string; children: ReactNode; hideFab?: boolean }) {
+export function AppShell({ title, subtitle, children, hideFab }: { title: string; subtitle?: string | undefined; children: ReactNode; hideFab?: boolean }) {
   const { pathname } = useLocation();
   const {data:account}=useSuspenseQuery(accountOptions);
   const role=account.role;
