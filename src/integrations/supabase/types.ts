@@ -617,6 +617,20 @@ export type Database = {
         }
         Returns: string
       }
+      daily_report_data: {
+        Args: { _day: string; _owners?: string[] }
+        Returns: Json
+      }
+      daily_report_staff: {
+        Args: never
+        Returns: {
+          role: Database["public"]["Enums"]["app_role"]
+          staff_code: string
+          staff_name: string
+          tl_id: string
+          user_id: string
+        }[]
+      }
       feature_access: {
         Args: { _feature: string; _write?: boolean }
         Returns: boolean
