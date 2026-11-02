@@ -15,6 +15,13 @@
       "when": 1793626742518,
       "tag": "0001_add_trusted_it_role",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793626790318,
+      "tag": "0002_revision_operations_calendar_permissions",
+      "breakpoints": true
     }
   ]
 }
