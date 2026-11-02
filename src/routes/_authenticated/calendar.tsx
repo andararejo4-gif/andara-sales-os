@@ -1,0 +1,6 @@
+import {createFileRoute,redirect} from '@tanstack/react-router';
+import {AppShell} from '@/components/AppShell';
+import {Agenda} from '@/components/Agenda';
+import {revisionOptions} from '@/lib/revision-query';
+export const Route=createFileRoute('/_authenticated/calendar')({validateSearch:(search:Record<string,unknown>)=>({filter:['survey','tour','follow_up'].includes(String(search.filter))?String(search.filter):'all'}),beforeLoad:({context})=>{if(!context.account.role)throw redirect({to:'/dashboard'});},loader:({context})=>context.queryClient.ensureQueryData(revisionOptions),head:()=>({meta:[{title:'Kalender & Agenda — Andara Sales OS'},{name:'description',content:'Jadwal survei, tur dan tindak lanjut Andara.'},{property:'og:title',content:'Kalender & Agenda — Andara Sales OS'},{property:'og:description',content:'Agenda dan pengingat H-1 serta Hari H.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary'}]}),component:CalendarPage});
+function CalendarPage(){const {filter}=Route.useSearch();return <AppShell title="Kalender & Agenda" subtitle="Survei · Tur · Tindak lanjut" hideFab><Agenda filter={filter}/></AppShell>;}

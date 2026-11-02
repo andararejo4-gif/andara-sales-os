@@ -21,6 +21,7 @@ import { Route as AuthenticatedAktivitasBaruRouteImport } from './routes/_authen
 import { Route as AuthenticatedLeadIndexRouteImport } from './routes/_authenticated/lead.index'
 import { Route as AuthenticatedLeadIdRouteImport } from './routes/_authenticated/lead.$id'
 import { Route as AuthenticatedRuangFeatureRouteImport } from './routes/_authenticated/ruang.$feature'
+import { Route as ApiPublicJobsCalendarRemindersRouteImport } from './routes/api/public/jobs/calendar-reminders'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -84,6 +85,12 @@ const AuthenticatedRuangFeatureRoute =
     path: '/ruang/$feature',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicJobsCalendarRemindersRoute =
+  ApiPublicJobsCalendarRemindersRouteImport.update({
+    id: '/api/public/jobs/calendar-reminders',
+    path: '/api/public/jobs/calendar-reminders',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -97,6 +104,7 @@ export interface FileRoutesByFullPath {
   '/lead/$id': typeof AuthenticatedLeadIdRoute
   '/ruang/$feature': typeof AuthenticatedRuangFeatureRoute
   '/lead/': typeof AuthenticatedLeadIndexRoute
+  '/api/public/jobs/calendar-reminders': typeof ApiPublicJobsCalendarRemindersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -110,6 +118,7 @@ export interface FileRoutesByTo {
   '/lead/$id': typeof AuthenticatedLeadIdRoute
   '/ruang/$feature': typeof AuthenticatedRuangFeatureRoute
   '/lead': typeof AuthenticatedLeadIndexRoute
+  '/api/public/jobs/calendar-reminders': typeof ApiPublicJobsCalendarRemindersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -125,6 +134,7 @@ export interface FileRoutesById {
   '/_authenticated/lead/$id': typeof AuthenticatedLeadIdRoute
   '/_authenticated/ruang/$feature': typeof AuthenticatedRuangFeatureRoute
   '/_authenticated/lead/': typeof AuthenticatedLeadIndexRoute
+  '/api/public/jobs/calendar-reminders': typeof ApiPublicJobsCalendarRemindersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -140,6 +150,7 @@ export interface FileRouteTypes {
     | '/lead/$id'
     | '/ruang/$feature'
     | '/lead/'
+    | '/api/public/jobs/calendar-reminders'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -153,6 +164,7 @@ export interface FileRouteTypes {
     | '/lead/$id'
     | '/ruang/$feature'
     | '/lead'
+    | '/api/public/jobs/calendar-reminders'
   id:
     | '__root__'
     | '/'
@@ -167,6 +179,7 @@ export interface FileRouteTypes {
     | '/_authenticated/lead/$id'
     | '/_authenticated/ruang/$feature'
     | '/_authenticated/lead/'
+    | '/api/public/jobs/calendar-reminders'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -174,6 +187,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ApiPublicJobsCalendarRemindersRoute: typeof ApiPublicJobsCalendarRemindersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -262,6 +276,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRuangFeatureRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/jobs/calendar-reminders': {
+      id: '/api/public/jobs/calendar-reminders'
+      path: '/api/public/jobs/calendar-reminders'
+      fullPath: '/api/public/jobs/calendar-reminders'
+      preLoaderRoute: typeof ApiPublicJobsCalendarRemindersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -295,6 +316,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ApiPublicJobsCalendarRemindersRoute: ApiPublicJobsCalendarRemindersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
