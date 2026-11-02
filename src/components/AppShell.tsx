@@ -1,12 +1,14 @@
 import { Link, useLocation } from "@tanstack/react-router";
-import { Home, ListChecks, Map, Plus, Users, Wifi } from "lucide-react";
+import { Home, ListChecks, Map, Plus, Users, Wallet, Wifi } from "lucide-react";
+import type { Status } from "@/lib/data";
 import type { ReactNode } from "react";
 
 const nav = [
   { to: "/", label: "Beranda", icon: Home },
-  { to: "/tindak-lanjut", label: "Tindak Lanjut", icon: ListChecks },
+  { to: "/tindak-lanjut", label: "Antrean", icon: ListChecks },
   { to: "/lead", label: "Lead", icon: Users },
   { to: "/rute", label: "Rute", icon: Map },
+  { to: "/komisi", label: "Komisi", icon: Wallet },
 ] as const;
 
 export function AppShell({ title, subtitle, children, hideFab }: { title: string; subtitle?: string; children: ReactNode; hideFab?: boolean }) {
@@ -61,7 +63,7 @@ export function AppShell({ title, subtitle, children, hideFab }: { title: string
       )}
 
       <nav className="pb-safe fixed inset-x-0 bottom-0 z-30 border-t border-border bg-card/95 backdrop-blur-md md:hidden">
-        <div className="grid grid-cols-4">
+        <div className="grid grid-cols-5">
           {nav.map(({ to, label, icon: Icon }) => (
             <Link key={to} to={to} className={`flex h-16 flex-col items-center justify-center gap-1 text-[13px] font-medium ${active(to) ? "text-primary" : "text-muted-foreground"}`}>
               <Icon className="size-5" strokeWidth={active(to) ? 2.4 : 1.8} />
@@ -89,4 +91,14 @@ export function Section({ title, action, children }: { title: string; action?: R
 export function ScoreBadge({ skor }: { skor: number }) {
   const tone = skor >= 80 ? "bg-positive/12 text-positive" : skor >= 60 ? "bg-info/12 text-info" : "bg-muted text-muted-foreground";
   return <span className={`inline-flex h-7 min-w-10 items-center justify-center rounded-lg px-2 text-[13px] font-bold ${tone}`}>{skor}</span>;
+}
+
+const statusTone: Record<Status, string> = {
+  NA: "bg-muted text-muted-foreground", NO: "bg-destructive/12 text-destructive", ENG: "bg-muted text-foreground",
+  LEAD: "bg-info/12 text-info", QL: "bg-info/12 text-info", HOT: "bg-alert/12 text-alert", VISIT: "bg-warning/12 text-warning",
+  BOOK: "bg-primary/10 text-primary", CV: "bg-positive/12 text-positive", NURTURE: "bg-muted text-muted-foreground", LOST: "bg-muted text-muted-foreground",
+};
+
+export function StatusBadge({ status }: { status: Status }) {
+  return <span className={`inline-flex h-7 items-center rounded-lg px-2.5 text-[13px] font-bold ${statusTone[status]}`}>{status}</span>;
 }
