@@ -1,11 +1,13 @@
 # Role-based login
-- [ ] Apply uploaded master update: live lead creation/update, ADM/TL value verification, SM-approved IT lead edits, commissions/KPI storage and analytics links.
-- [ ] Verify new lead save/update/read flows and permission rules.
+- [x] Apply uploaded master update: live lead creation/update, ADM/TL value verification, SM-approved IT lead edits, commissions/KPI storage and analytics links.
+- [x] Verify SM lead create/update/reload on desktop and mobile, 28 permission/routing tests; remove test records afterward.
+- [ ] Verify ADM/TL value verification through assigned accounts (requires ADM/TL staff accounts).
+- [ ] Populate real commission/KPI records and company analytics links (requires approved operational data and company URLs).
 - [x] Apply revision MD: live revenue, interactive metrics, content attribution and lead hierarchy.
 - [x] Add protected ADM/TL assignments, IT maintenance read/audit access, project creation and daily report downloads.
 - [x] Add calendar agendas and scheduled H-1/day-of in-app reminders.
 - [x] Verify 22 tests and authenticated SM project/calendar save-and-read flows.
-- [ ] Verify TL/ADM report exports and IT screens with assigned accounts (requires those staff accounts).
+- [ ] Verify TL/ADM report exports and IT approval/apply flow (requires TL/ADM accounts and a real scoped maintenance request).
 - [ ] Connect real validated transactions, staff hierarchy, SE activities and generated video records (requires operational source data).
 - [x] Add account login, recovery, and sign-out.
 - [x] Protect existing pages and enforce the six document roles.
