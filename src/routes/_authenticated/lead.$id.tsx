@@ -1,9 +1,11 @@
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { screenAccess } from "@/lib/roles";
+import { redirect, createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { MapPin, MessageCircle, Phone, Sparkles } from "lucide-react";
 import { AppShell, Section, StatusBadge } from "@/components/AppShell";
 import { findLead, jalurPipeline, riwayat, samarkan, statusInfo } from "@/lib/data";
 
-export const Route = createFileRoute("/lead/$id")({
+export const Route = createFileRoute("/_authenticated/lead/$id")({
+  beforeLoad: ({ context }) => { if (!context.account.role || screenAccess(context.account.role, 3) === "none") throw redirect({ to: "/dashboard", replace: true }); },
   loader: ({ params }) => {
     const lead = findLead(params.id);
     if (!lead) throw notFound();
@@ -12,6 +14,8 @@ export const Route = createFileRoute("/lead/$id")({
   head: ({ loaderData }) => ({
     meta: [
       { title: loaderData ? `${loaderData.lead.panggilan} — Andara Sales OS` : "Lead tidak ditemukan" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "description", content: "Status pipeline, skor, riwayat, dan langkah berikutnya." },
       { property: "og:title", content: "Rincian Lead — Andara Sales OS" },
       { property: "og:description", content: "Status pipeline, skor, riwayat, dan langkah berikutnya." },

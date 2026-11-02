@@ -1,12 +1,16 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { screenAccess } from "@/lib/roles";
+import { redirect, createFileRoute } from "@tanstack/react-router";
 import { CheckCircle2, Clock, Lock } from "lucide-react";
 import { AppShell, Section } from "@/components/AppShell";
 import { milestoneKomisi } from "@/lib/data";
 
-export const Route = createFileRoute("/komisi")({
+export const Route = createFileRoute("/_authenticated/komisi")({
+  beforeLoad: ({ context }) => { if (!context.account.role || screenAccess(context.account.role, 14) === "none") throw redirect({ to: "/dashboard", replace: true }); },
   head: () => ({
     meta: [
       { title: "Komisi Saya — Andara Sales OS" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "description", content: "Komisi berjalan dan empat milestone pencairan." },
       { property: "og:title", content: "Komisi Saya — Andara Sales OS" },
       { property: "og:description", content: "Komisi berjalan dan empat milestone pencairan." },
@@ -21,7 +25,7 @@ const rp = (n: number) => "Rp " + n.toLocaleString("id-ID");
 function Komisi() {
   const cair = milestoneKomisi.filter((m) => m.status === "cair").reduce((s, m) => s + m.porsi, 0);
   return (
-    <AppShell title="Komisi Saya" subtitle="Pak Joko · Puri Alam Gayamprit · L-1024">
+    <AppShell title="Komisi Saya" subtitle="Data contoh · bukan komisi akun Anda">
       <div className="mb-7 grid grid-cols-2 gap-3">
         <div className="surface p-5"><p className="text-[13px] text-muted-foreground">Total komisi transaksi</p><p className="mt-1 text-xl font-bold leading-tight md:text-[28px]">{rp(total)}</p></div>
         <div className="surface p-5"><p className="text-[13px] text-muted-foreground">Sudah cair</p><p className="mt-1 text-xl font-bold leading-tight md:text-[28px] text-positive">{rp((total * cair) / 100)}</p></div>
