@@ -9,82 +9,113 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as KomisiRouteImport } from './routes/komisi'
-import { Route as RuteRouteImport } from './routes/rute'
-import { Route as TindakLanjutRouteImport } from './routes/tindak-lanjut'
-import { Route as AktivitasBaruRouteImport } from './routes/aktivitas.baru'
-import { Route as LeadIndexRouteImport } from './routes/lead.index'
-import { Route as LeadIdRouteImport } from './routes/lead.$id'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedKomisiRouteImport } from './routes/_authenticated/komisi'
+import { Route as AuthenticatedRuteRouteImport } from './routes/_authenticated/rute'
+import { Route as AuthenticatedTindakLanjutRouteImport } from './routes/_authenticated/tindak-lanjut'
+import { Route as AuthenticatedAktivitasBaruRouteImport } from './routes/_authenticated/aktivitas.baru'
+import { Route as AuthenticatedLeadIndexRouteImport } from './routes/_authenticated/lead.index'
+import { Route as AuthenticatedLeadIdRouteImport } from './routes/_authenticated/lead.$id'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
-const KomisiRoute = KomisiRouteImport.update({
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedKomisiRoute = AuthenticatedKomisiRouteImport.update({
   id: '/komisi',
   path: '/komisi',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const RuteRoute = RuteRouteImport.update({
+const AuthenticatedRuteRoute = AuthenticatedRuteRouteImport.update({
   id: '/rute',
   path: '/rute',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const TindakLanjutRoute = TindakLanjutRouteImport.update({
-  id: '/tindak-lanjut',
-  path: '/tindak-lanjut',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AktivitasBaruRoute = AktivitasBaruRouteImport.update({
-  id: '/aktivitas/baru',
-  path: '/aktivitas/baru',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LeadIndexRoute = LeadIndexRouteImport.update({
+const AuthenticatedTindakLanjutRoute =
+  AuthenticatedTindakLanjutRouteImport.update({
+    id: '/tindak-lanjut',
+    path: '/tindak-lanjut',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedAktivitasBaruRoute =
+  AuthenticatedAktivitasBaruRouteImport.update({
+    id: '/aktivitas/baru',
+    path: '/aktivitas/baru',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedLeadIndexRoute = AuthenticatedLeadIndexRouteImport.update({
   id: '/lead/',
   path: '/lead/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const LeadIdRoute = LeadIdRouteImport.update({
+const AuthenticatedLeadIdRoute = AuthenticatedLeadIdRouteImport.update({
   id: '/lead/$id',
   path: '/lead/$id',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof IndexRoute
-  '/komisi': typeof KomisiRoute
-  '/rute': typeof RuteRoute
-  '/tindak-lanjut': typeof TindakLanjutRoute
-  '/aktivitas/baru': typeof AktivitasBaruRoute
-  '/lead/$id': typeof LeadIdRoute
-  '/lead/': typeof LeadIndexRoute
+  '/': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/komisi': typeof AuthenticatedKomisiRoute
+  '/rute': typeof AuthenticatedRuteRoute
+  '/tindak-lanjut': typeof AuthenticatedTindakLanjutRoute
+  '/aktivitas/baru': typeof AuthenticatedAktivitasBaruRoute
+  '/lead/$id': typeof AuthenticatedLeadIdRoute
+  '/lead/': typeof AuthenticatedLeadIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof IndexRoute
-  '/komisi': typeof KomisiRoute
-  '/rute': typeof RuteRoute
-  '/tindak-lanjut': typeof TindakLanjutRoute
-  '/aktivitas/baru': typeof AktivitasBaruRoute
-  '/lead/$id': typeof LeadIdRoute
-  '/lead': typeof LeadIndexRoute
+  '/': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/komisi': typeof AuthenticatedKomisiRoute
+  '/rute': typeof AuthenticatedRuteRoute
+  '/tindak-lanjut': typeof AuthenticatedTindakLanjutRoute
+  '/aktivitas/baru': typeof AuthenticatedAktivitasBaruRoute
+  '/lead/$id': typeof AuthenticatedLeadIdRoute
+  '/lead': typeof AuthenticatedLeadIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
-  '/': typeof IndexRoute
-  '/komisi': typeof KomisiRoute
-  '/rute': typeof RuteRoute
-  '/tindak-lanjut': typeof TindakLanjutRoute
-  '/aktivitas/baru': typeof AktivitasBaruRoute
-  '/lead/$id': typeof LeadIdRoute
-  '/lead/': typeof LeadIndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/komisi': typeof AuthenticatedKomisiRoute
+  '/_authenticated/rute': typeof AuthenticatedRuteRoute
+  '/_authenticated/tindak-lanjut': typeof AuthenticatedTindakLanjutRoute
+  '/_authenticated/aktivitas/baru': typeof AuthenticatedAktivitasBaruRoute
+  '/_authenticated/lead/$id': typeof AuthenticatedLeadIdRoute
+  '/_authenticated/lead/': typeof AuthenticatedLeadIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
+    | '/reset-password'
+    | '/dashboard'
     | '/komisi'
     | '/rute'
     | '/tindak-lanjut'
@@ -94,6 +125,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
+    | '/reset-password'
+    | '/dashboard'
     | '/komisi'
     | '/rute'
     | '/tindak-lanjut'
@@ -102,87 +136,126 @@ export interface FileRouteTypes {
     | '/lead'
   id:
     | '__root__'
-    | '/'
-    | '/komisi'
-    | '/rute'
-    | '/tindak-lanjut'
-    | '/aktivitas/baru'
-    | '/lead/$id'
-    | '/lead/'
+    | '/_authenticated'
+    | '/auth'
+    | '/reset-password'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/komisi'
+    | '/_authenticated/rute'
+    | '/_authenticated/tindak-lanjut'
+    | '/_authenticated/aktivitas/baru'
+    | '/_authenticated/lead/$id'
+    | '/_authenticated/lead/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
-  IndexRoute: typeof IndexRoute
-  KomisiRoute: typeof KomisiRoute
-  RuteRoute: typeof RuteRoute
-  TindakLanjutRoute: typeof TindakLanjutRoute
-  AktivitasBaruRoute: typeof AktivitasBaruRoute
-  LeadIdRoute: typeof LeadIdRoute
-  LeadIndexRoute: typeof LeadIndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
       fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/komisi': {
-      id: '/komisi'
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/komisi': {
+      id: '/_authenticated/komisi'
       path: '/komisi'
       fullPath: '/komisi'
-      preLoaderRoute: typeof KomisiRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedKomisiRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/rute': {
-      id: '/rute'
+    '/_authenticated/rute': {
+      id: '/_authenticated/rute'
       path: '/rute'
       fullPath: '/rute'
-      preLoaderRoute: typeof RuteRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedRuteRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/tindak-lanjut': {
-      id: '/tindak-lanjut'
+    '/_authenticated/tindak-lanjut': {
+      id: '/_authenticated/tindak-lanjut'
       path: '/tindak-lanjut'
       fullPath: '/tindak-lanjut'
-      preLoaderRoute: typeof TindakLanjutRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedTindakLanjutRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/aktivitas/baru': {
-      id: '/aktivitas/baru'
+    '/_authenticated/aktivitas/baru': {
+      id: '/_authenticated/aktivitas/baru'
       path: '/aktivitas/baru'
       fullPath: '/aktivitas/baru'
-      preLoaderRoute: typeof AktivitasBaruRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedAktivitasBaruRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/lead/': {
-      id: '/lead/'
+    '/_authenticated/lead/': {
+      id: '/_authenticated/lead/'
       path: '/lead'
       fullPath: '/lead/'
-      preLoaderRoute: typeof LeadIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedLeadIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/lead/$id': {
-      id: '/lead/$id'
+    '/_authenticated/lead/$id': {
+      id: '/_authenticated/lead/$id'
       path: '/lead/$id'
       fullPath: '/lead/$id'
-      preLoaderRoute: typeof LeadIdRouteImport
-      parentRoute: typeof rootRouteImport
+      preLoaderRoute: typeof AuthenticatedLeadIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedKomisiRoute: typeof AuthenticatedKomisiRoute
+  AuthenticatedRuteRoute: typeof AuthenticatedRuteRoute
+  AuthenticatedTindakLanjutRoute: typeof AuthenticatedTindakLanjutRoute
+  AuthenticatedAktivitasBaruRoute: typeof AuthenticatedAktivitasBaruRoute
+  AuthenticatedLeadIdRoute: typeof AuthenticatedLeadIdRoute
+  AuthenticatedLeadIndexRoute: typeof AuthenticatedLeadIndexRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedKomisiRoute: AuthenticatedKomisiRoute,
+  AuthenticatedRuteRoute: AuthenticatedRuteRoute,
+  AuthenticatedTindakLanjutRoute: AuthenticatedTindakLanjutRoute,
+  AuthenticatedAktivitasBaruRoute: AuthenticatedAktivitasBaruRoute,
+  AuthenticatedLeadIdRoute: AuthenticatedLeadIdRoute,
+  AuthenticatedLeadIndexRoute: AuthenticatedLeadIndexRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
-  IndexRoute: IndexRoute,
-  KomisiRoute: KomisiRoute,
-  RuteRoute: RuteRoute,
-  TindakLanjutRoute: TindakLanjutRoute,
-  AktivitasBaruRoute: AktivitasBaruRoute,
-  LeadIdRoute: LeadIdRoute,
-  LeadIndexRoute: LeadIndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
