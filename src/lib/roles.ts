@@ -43,4 +43,12 @@ export const workspaces = {
 } as const;
 export type Workspace = keyof typeof workspaces;
 export const primaryWorkspace: Record<Exclude<AppRole,'se'>, Workspace> = { tl:'team',adm:'verification',dm:'content',sm:'projects',dir:'portfolio' };
+// Master V.2, chapter 32, pages 69–70; no invented operational values.
+export const workspaceMetrics: Record<Workspace,string[]> = {
+ team:['Capaian per anggota','Lead jatuh tempo','SLA lampau','Audit lead & berkas','Sengketa sumber','Rute & K3'],
+ verification:['Lead masuk & duplikat','Lead belum dialokasi','Kelengkapan berkas','Rekonsiliasi tiga jalur','Versi harga & stok','Paket komisi'],
+ content:['Inquiry unik','Biaya per lead','Biaya per closing','Anggaran terpakai','Antrean tanggapan','Kinerja per platform'],
+ projects:['Papan portofolio per wilayah','Cakupan pipeline','Akurasi ramalan','Kesehatan funnel','Beban kerja tim','Hambatan & penanggung jawab'],
+ portfolio:['Omzet & margin per proyek','Laju serapan stok','Biaya akuisisi per closing','Rasio biaya tenaga penjualan','Proyeksi 3 bulan','Persetujuan & pengecualian harga'],
+};
 export function workspaceAllowed(role: AppRole, key: Workspace, write = false) { return (write ? workspaces[key].writers : workspaces[key].roles).some(r => r === role); }
