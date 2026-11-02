@@ -8,6 +8,13 @@
       "when": 1793600754093,
       "tag": "0000_role_access_and_workspaces",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793626742518,
+      "tag": "0001_add_trusted_it_role",
+      "breakpoints": true
     }
   ]
 }
