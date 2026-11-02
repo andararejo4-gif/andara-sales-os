@@ -10,6 +10,9 @@
 <!-- LOVABLE:END -->
 
 - All private screens live under the integration-compatible `_authenticated` layout; `/` and `/auth` are public login surfaces to prevent SSR session redirects.
-- Account roles are protected rows in `user_roles`, never editable profile metadata; screen permissions follow the document matrix in a shared helper.
+- Account roles and staff hierarchy are protected rows in `user_roles`, never editable profile metadata; shared permissions and RLS enforce the document matrix plus explicit revision overrides.
 - Role workspaces store scoped records in `work_items` with RLS and authenticated server functions; existing sales examples remain explicitly marked demo until operational data is connected.
 - Assign staff roles through trusted database operations only; accounts without a role receive no application access, and no first-user privilege bootstrap is allowed.
+- Operational revision data uses scoped projects, sales leads, transactions, activities, AI video publication records and calendar events; demo sales records never contribute to live totals or exports.
+- Calendar reminders are durable in-app notifications generated idempotently by an authenticated managed scheduled callback using Asia/Jakarta dates.
+- IT maintenance exposes authorized application records and audit logs only, never service credentials or arbitrary SQL execution.

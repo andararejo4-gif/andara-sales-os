@@ -13,14 +13,17 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as AuthenticatedCalendarRouteImport } from './routes/_authenticated/calendar'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedKomisiRouteImport } from './routes/_authenticated/komisi'
 import { Route as AuthenticatedRuteRouteImport } from './routes/_authenticated/rute'
 import { Route as AuthenticatedTindakLanjutRouteImport } from './routes/_authenticated/tindak-lanjut'
 import { Route as AuthenticatedAktivitasBaruRouteImport } from './routes/_authenticated/aktivitas.baru'
+import { Route as AuthenticatedDataKindRouteImport } from './routes/_authenticated/data.$kind'
 import { Route as AuthenticatedLeadIndexRouteImport } from './routes/_authenticated/lead.index'
 import { Route as AuthenticatedLeadIdRouteImport } from './routes/_authenticated/lead.$id'
 import { Route as AuthenticatedRuangFeatureRouteImport } from './routes/_authenticated/ruang.$feature'
+import { Route as ApiPublicJobsCalendarRemindersRouteImport } from './routes/api/public/jobs/calendar-reminders'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +43,11 @@ const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedCalendarRoute = AuthenticatedCalendarRouteImport.update({
+  id: '/calendar',
+  path: '/calendar',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
@@ -68,6 +76,11 @@ const AuthenticatedAktivitasBaruRoute =
     path: '/aktivitas/baru',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedDataKindRoute = AuthenticatedDataKindRouteImport.update({
+  id: '/data/$kind',
+  path: '/data/$kind',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedLeadIndexRoute = AuthenticatedLeadIndexRouteImport.update({
   id: '/lead/',
   path: '/lead/',
@@ -84,32 +97,44 @@ const AuthenticatedRuangFeatureRoute =
     path: '/ruang/$feature',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicJobsCalendarRemindersRoute =
+  ApiPublicJobsCalendarRemindersRouteImport.update({
+    id: '/api/public/jobs/calendar-reminders',
+    path: '/api/public/jobs/calendar-reminders',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/calendar': typeof AuthenticatedCalendarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/komisi': typeof AuthenticatedKomisiRoute
   '/rute': typeof AuthenticatedRuteRoute
   '/tindak-lanjut': typeof AuthenticatedTindakLanjutRoute
   '/aktivitas/baru': typeof AuthenticatedAktivitasBaruRoute
+  '/data/$kind': typeof AuthenticatedDataKindRoute
   '/lead/$id': typeof AuthenticatedLeadIdRoute
   '/ruang/$feature': typeof AuthenticatedRuangFeatureRoute
   '/lead/': typeof AuthenticatedLeadIndexRoute
+  '/api/public/jobs/calendar-reminders': typeof ApiPublicJobsCalendarRemindersRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/calendar': typeof AuthenticatedCalendarRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/komisi': typeof AuthenticatedKomisiRoute
   '/rute': typeof AuthenticatedRuteRoute
   '/tindak-lanjut': typeof AuthenticatedTindakLanjutRoute
   '/aktivitas/baru': typeof AuthenticatedAktivitasBaruRoute
+  '/data/$kind': typeof AuthenticatedDataKindRoute
   '/lead/$id': typeof AuthenticatedLeadIdRoute
   '/ruang/$feature': typeof AuthenticatedRuangFeatureRoute
   '/lead': typeof AuthenticatedLeadIndexRoute
+  '/api/public/jobs/calendar-reminders': typeof ApiPublicJobsCalendarRemindersRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -117,14 +142,17 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/_authenticated/calendar': typeof AuthenticatedCalendarRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/komisi': typeof AuthenticatedKomisiRoute
   '/_authenticated/rute': typeof AuthenticatedRuteRoute
   '/_authenticated/tindak-lanjut': typeof AuthenticatedTindakLanjutRoute
   '/_authenticated/aktivitas/baru': typeof AuthenticatedAktivitasBaruRoute
+  '/_authenticated/data/$kind': typeof AuthenticatedDataKindRoute
   '/_authenticated/lead/$id': typeof AuthenticatedLeadIdRoute
   '/_authenticated/ruang/$feature': typeof AuthenticatedRuangFeatureRoute
   '/_authenticated/lead/': typeof AuthenticatedLeadIndexRoute
+  '/api/public/jobs/calendar-reminders': typeof ApiPublicJobsCalendarRemindersRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -132,41 +160,50 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/reset-password'
+    | '/calendar'
     | '/dashboard'
     | '/komisi'
     | '/rute'
     | '/tindak-lanjut'
     | '/aktivitas/baru'
+    | '/data/$kind'
     | '/lead/$id'
     | '/ruang/$feature'
     | '/lead/'
+    | '/api/public/jobs/calendar-reminders'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
     | '/reset-password'
+    | '/calendar'
     | '/dashboard'
     | '/komisi'
     | '/rute'
     | '/tindak-lanjut'
     | '/aktivitas/baru'
+    | '/data/$kind'
     | '/lead/$id'
     | '/ruang/$feature'
     | '/lead'
+    | '/api/public/jobs/calendar-reminders'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
     | '/reset-password'
+    | '/_authenticated/calendar'
     | '/_authenticated/dashboard'
     | '/_authenticated/komisi'
     | '/_authenticated/rute'
     | '/_authenticated/tindak-lanjut'
     | '/_authenticated/aktivitas/baru'
+    | '/_authenticated/data/$kind'
     | '/_authenticated/lead/$id'
     | '/_authenticated/ruang/$feature'
     | '/_authenticated/lead/'
+    | '/api/public/jobs/calendar-reminders'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -174,6 +211,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ApiPublicJobsCalendarRemindersRoute: typeof ApiPublicJobsCalendarRemindersRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -205,6 +243,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/calendar': {
+      id: '/_authenticated/calendar'
+      path: '/calendar'
+      fullPath: '/calendar'
+      preLoaderRoute: typeof AuthenticatedCalendarRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
@@ -241,6 +286,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAktivitasBaruRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/data/$kind': {
+      id: '/_authenticated/data/$kind'
+      path: '/data/$kind'
+      fullPath: '/data/$kind'
+      preLoaderRoute: typeof AuthenticatedDataKindRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/lead/': {
       id: '/_authenticated/lead/'
       path: '/lead'
@@ -262,26 +314,37 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRuangFeatureRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/jobs/calendar-reminders': {
+      id: '/api/public/jobs/calendar-reminders'
+      path: '/api/public/jobs/calendar-reminders'
+      fullPath: '/api/public/jobs/calendar-reminders'
+      preLoaderRoute: typeof ApiPublicJobsCalendarRemindersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedCalendarRoute: typeof AuthenticatedCalendarRoute
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedKomisiRoute: typeof AuthenticatedKomisiRoute
   AuthenticatedRuteRoute: typeof AuthenticatedRuteRoute
   AuthenticatedTindakLanjutRoute: typeof AuthenticatedTindakLanjutRoute
   AuthenticatedAktivitasBaruRoute: typeof AuthenticatedAktivitasBaruRoute
+  AuthenticatedDataKindRoute: typeof AuthenticatedDataKindRoute
   AuthenticatedLeadIdRoute: typeof AuthenticatedLeadIdRoute
   AuthenticatedRuangFeatureRoute: typeof AuthenticatedRuangFeatureRoute
   AuthenticatedLeadIndexRoute: typeof AuthenticatedLeadIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedCalendarRoute: AuthenticatedCalendarRoute,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedKomisiRoute: AuthenticatedKomisiRoute,
   AuthenticatedRuteRoute: AuthenticatedRuteRoute,
   AuthenticatedTindakLanjutRoute: AuthenticatedTindakLanjutRoute,
   AuthenticatedAktivitasBaruRoute: AuthenticatedAktivitasBaruRoute,
+  AuthenticatedDataKindRoute: AuthenticatedDataKindRoute,
   AuthenticatedLeadIdRoute: AuthenticatedLeadIdRoute,
   AuthenticatedRuangFeatureRoute: AuthenticatedRuangFeatureRoute,
   AuthenticatedLeadIndexRoute: AuthenticatedLeadIndexRoute,
@@ -295,6 +358,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ApiPublicJobsCalendarRemindersRoute: ApiPublicJobsCalendarRemindersRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

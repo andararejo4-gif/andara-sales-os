@@ -1,7 +1,13 @@
 # Role-based login
+- [x] Apply revision MD: live revenue, interactive metrics, content attribution and lead hierarchy.
+- [x] Add protected ADM/TL assignments, IT maintenance read/audit access, project creation and daily report downloads.
+- [x] Add calendar agendas and scheduled H-1/day-of in-app reminders.
+- [x] Verify 22 tests and authenticated SM project/calendar save-and-read flows.
+- [ ] Verify TL/ADM report exports and IT screens with assigned accounts (requires those staff accounts).
+- [ ] Connect real validated transactions, staff hierarchy, SE activities and generated video records (requires operational source data).
 - [x] Add account login, recovery, and sign-out.
 - [x] Protect existing pages and enforce the six document roles.
 - [x] Add role-specific dashboards and scoped work-item workspaces; operational metric values remain empty until real sources are connected.
 - [x] Verify public login, signed-out redirects, responsive rendering, and 11 permission/routing tests.
-- [ ] Verify authenticated login, role dashboards, work-item saves, and sign-out (blocked: no auth users exist).
+- [ ] Verify remaining role dashboards, work-item saves, and sign-out (requires other staff accounts).
 - [ ] Assign real staff accounts and roles (requires staff emails and role mapping).

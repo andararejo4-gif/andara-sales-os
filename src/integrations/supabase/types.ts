@@ -14,26 +14,360 @@ export type Database = {
   }
   public: {
     Tables: {
+      admin_tl_assignments: {
+        Row: {
+          admin_id: string
+          id: string
+          tl_id: string
+        }
+        Insert: {
+          admin_id: string
+          id?: string
+          tl_id: string
+        }
+        Update: {
+          admin_id?: string
+          id?: string
+          tl_id?: string
+        }
+        Relationships: []
+      }
+      ai_videos: {
+        Row: {
+          asset_url: string | null
+          created_at: string
+          id: string
+          owner_id: string
+          project_id: string | null
+          published_at: string | null
+          publisher_id: string | null
+          status: string
+          team_id: string | null
+          title: string
+          tl_id: string | null
+        }
+        Insert: {
+          asset_url?: string | null
+          created_at?: string
+          id?: string
+          owner_id: string
+          project_id?: string | null
+          published_at?: string | null
+          publisher_id?: string | null
+          status?: string
+          team_id?: string | null
+          title: string
+          tl_id?: string | null
+        }
+        Update: {
+          asset_url?: string | null
+          created_at?: string
+          id?: string
+          owner_id?: string
+          project_id?: string | null
+          published_at?: string | null
+          publisher_id?: string | null
+          status?: string
+          team_id?: string | null
+          title?: string
+          tl_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ai_videos_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "sales_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      audit_logs: {
+        Row: {
+          action: string
+          actor_id: string | null
+          created_at: string
+          id: string
+          record_id: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          record_id?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          created_at?: string
+          id?: string
+          record_id?: string | null
+        }
+        Relationships: []
+      }
+      calendar_events: {
+        Row: {
+          created_at: string
+          id: string
+          kind: string
+          location: string
+          owner_id: string
+          project_id: string | null
+          starts_at: string
+          status: string
+          team_id: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          kind: string
+          location?: string
+          owner_id?: string
+          project_id?: string | null
+          starts_at: string
+          status?: string
+          team_id?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          kind?: string
+          location?: string
+          owner_id?: string
+          project_id?: string | null
+          starts_at?: string
+          status?: string
+          team_id?: string | null
+          title?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "calendar_events_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "sales_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      event_reminders: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          kind: string
+          read_at: string | null
+          recipient_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          kind: string
+          read_at?: string | null
+          recipient_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          kind?: string
+          read_at?: string | null
+          recipient_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_reminders_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "calendar_events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_activities: {
+        Row: {
+          id: string
+          kind: string
+          note: string
+          occurred_at: string
+          owner_id: string
+          project_id: string | null
+          team_id: string | null
+        }
+        Insert: {
+          id?: string
+          kind: string
+          note?: string
+          occurred_at?: string
+          owner_id: string
+          project_id?: string | null
+          team_id?: string | null
+        }
+        Update: {
+          id?: string
+          kind?: string
+          note?: string
+          occurred_at?: string
+          owner_id?: string
+          project_id?: string | null
+          team_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_activities_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "sales_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_leads: {
+        Row: {
+          created_at: string
+          id: string
+          nickname: string
+          owner_id: string
+          project_id: string | null
+          status: string
+          team_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          nickname: string
+          owner_id: string
+          project_id?: string | null
+          status?: string
+          team_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          nickname?: string
+          owner_id?: string
+          project_id?: string | null
+          status?: string
+          team_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_leads_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "sales_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      sales_projects: {
+        Row: {
+          created_at: string
+          created_by: string
+          id: string
+          name: string
+          target_amount: number
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          name: string
+          target_amount?: number
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          id?: string
+          name?: string
+          target_amount?: number
+        }
+        Relationships: []
+      }
+      sales_transactions: {
+        Row: {
+          amount: number
+          closed_on: string
+          created_at: string
+          id: string
+          lead_id: string | null
+          owner_id: string
+          project_id: string
+          status: string
+          team_id: string | null
+        }
+        Insert: {
+          amount: number
+          closed_on?: string
+          created_at?: string
+          id?: string
+          lead_id?: string | null
+          owner_id: string
+          project_id: string
+          status: string
+          team_id?: string | null
+        }
+        Update: {
+          amount?: number
+          closed_on?: string
+          created_at?: string
+          id?: string
+          lead_id?: string | null
+          owner_id?: string
+          project_id?: string
+          status?: string
+          team_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sales_transactions_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "sales_leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sales_transactions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "sales_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
           project_id: string | null
           role: Database["public"]["Enums"]["app_role"]
+          staff_code: string
+          staff_name: string
           team_id: string | null
+          tl_id: string | null
           user_id: string
         }
         Insert: {
           id?: string
           project_id?: string | null
           role: Database["public"]["Enums"]["app_role"]
+          staff_code?: string
+          staff_name?: string
           team_id?: string | null
+          tl_id?: string | null
           user_id: string
         }
         Update: {
           id?: string
           project_id?: string | null
           role?: Database["public"]["Enums"]["app_role"]
+          staff_code?: string
+          staff_name?: string
           team_id?: string | null
+          tl_id?: string | null
           user_id?: string
         }
         Relationships: []
@@ -87,6 +421,7 @@ export type Database = {
         Args: { _feature: string; _write?: boolean }
         Returns: boolean
       }
+      generate_event_reminders: { Args: never; Returns: number }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -94,9 +429,25 @@ export type Database = {
         }
         Returns: boolean
       }
+      staff_directory: {
+        Args: never
+        Returns: {
+          project_id: string
+          role: Database["public"]["Enums"]["app_role"]
+          staff_code: string
+          staff_name: string
+          team_id: string
+          tl_id: string
+          user_id: string
+        }[]
+      }
+      valid_owner_scope: {
+        Args: { _owner: string; _project: string; _team: string }
+        Returns: boolean
+      }
     }
     Enums: {
-      app_role: "se" | "tl" | "adm" | "dm" | "sm" | "dir"
+      app_role: "se" | "tl" | "adm" | "dm" | "sm" | "dir" | "it"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -224,7 +575,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["se", "tl", "adm", "dm", "sm", "dir"],
+      app_role: ["se", "tl", "adm", "dm", "sm", "dir", "it"],
     },
   },
 } as const

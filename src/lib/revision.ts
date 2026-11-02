@@ -1,0 +1,10 @@
+export type Staff={user_id:string;staff_code:string;staff_name:string;tl_id:string|null;role:string};
+export function rupiahShort(value:number){return value>=1_000_000_000?`${Number((value/1_000_000_000).toFixed(2)).toLocaleString('id-ID')} M`:`${Number((value/1_000_000).toFixed(2)).toLocaleString('id-ID')} jt`;}
+export function revenueSummary(transactions:{amount:number|string;status:string}[],target:number){const actual=transactions.filter(t=>t.status==='CV').reduce((sum,t)=>sum+Number(t.amount),0);return{actual,target,percent:target>0?actual/target*100:0,label:`${rupiahShort(actual)} / ${rupiahShort(target)}`};}
+export function leadAttribution(nickname:string,se:Staff|undefined,tl:Staff|undefined,role:string){if(!se||!tl)return `${nickname} — Penanggung jawab belum lengkap`;const name=tl.staff_name||'Belum ditetapkan';return `${nickname} — TL ${name} (SE ${se.staff_code} ${se.staff_name}${role==='sm'?` - TL ${name}`:''})`;}
+export function publicationAttribution(se:Staff|undefined,tl:Staff|undefined){return se&&tl?`Sudah dipublish oleh SE ${se.staff_code} ${se.staff_name} - TL ${tl.staff_code ? `${tl.staff_code} `:''}${tl.staff_name}`:'Penanggung jawab publikasi belum lengkap';}
+export function jakartaDay(date:Date){return new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit',day:'2-digit'}).format(date);}
+export function reminderKind(startsAt:string,now:Date){const day=jakartaDay(new Date(startsAt)),today=jakartaDay(now),tomorrow=jakartaDay(new Date(now.getTime()+86400000));return day===today?'day_of':day===tomorrow?'h_minus_1':null;}
+export function csvCell(value:unknown){const text=String(value??'');return `"${(/^[=+@\-\t\r]/.test(text)?`'${text}`:text).replaceAll('"','""')}"`;}
+export const recordLabels={leads:'Lead operasional',projects:'Proyek & Target',transactions:'Transaksi valid',activities:'Aktivitas & Laporan',videos:'Video AI',audit:'Log Audit',staff:'Penanggung Jawab'} as const;
+export type RecordKind=keyof typeof recordLabels;
