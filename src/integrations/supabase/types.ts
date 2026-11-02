@@ -14,16 +14,89 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      user_roles: {
+        Row: {
+          id: string
+          project_id: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          team_id: string | null
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          project_id?: string | null
+          role: Database["public"]["Enums"]["app_role"]
+          team_id?: string | null
+          user_id: string
+        }
+        Update: {
+          id?: string
+          project_id?: string | null
+          role?: Database["public"]["Enums"]["app_role"]
+          team_id?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      work_items: {
+        Row: {
+          created_at: string
+          feature: string
+          id: string
+          note: string
+          owner_id: string
+          project_id: string | null
+          status: string
+          team_id: string | null
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          feature: string
+          id?: string
+          note?: string
+          owner_id?: string
+          project_id?: string | null
+          status?: string
+          team_id?: string | null
+          title: string
+        }
+        Update: {
+          created_at?: string
+          feature?: string
+          id?: string
+          note?: string
+          owner_id?: string
+          project_id?: string | null
+          status?: string
+          team_id?: string | null
+          title?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      can_read_scope: {
+        Args: { _owner: string; _project: string; _team: string }
+        Returns: boolean
+      }
+      feature_access: {
+        Args: { _feature: string; _write?: boolean }
+        Returns: boolean
+      }
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "se" | "tl" | "adm" | "dm" | "sm" | "dir"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +223,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["se", "tl", "adm", "dm", "sm", "dir"],
+    },
   },
 } as const
