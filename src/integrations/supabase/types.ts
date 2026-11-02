@@ -606,6 +606,17 @@ export type Database = {
         Args: { _owner: string; _project: string; _team: string }
         Returns: boolean
       }
+      create_sales_lead: {
+        Args: {
+          _address: string
+          _name: string
+          _note?: string
+          _phone: string
+          _source: string
+          _status: string
+        }
+        Returns: string
+      }
       feature_access: {
         Args: { _feature: string; _write?: boolean }
         Returns: boolean

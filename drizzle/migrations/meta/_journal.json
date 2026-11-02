@@ -29,6 +29,13 @@
       "when": 1793628295372,
       "tag": "0003_master_lead_workflows_and_maintenance_approval",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1793628434094,
+      "tag": "0004_lead_creation_rpc",
+      "breakpoints": true
     }
   ]
 }

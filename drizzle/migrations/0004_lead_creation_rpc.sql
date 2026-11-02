@@ -1,0 +1,3 @@
+CREATE FUNCTION public.create_sales_lead(_name text,_phone text,_address text,_source text,_status text,_note text DEFAULT '') RETURNS uuid LANGUAGE sql SECURITY INVOKER SET search_path=public AS $$ SELECT public.save_sales_lead(NULL,_name,_phone,_address,_source,_status,_note); $$;
+REVOKE ALL ON FUNCTION public.create_sales_lead(text,text,text,text,text,text) FROM PUBLIC;
+GRANT EXECUTE ON FUNCTION public.create_sales_lead(text,text,text,text,text,text) TO authenticated;
