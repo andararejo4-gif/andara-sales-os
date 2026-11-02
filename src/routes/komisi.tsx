@@ -23,8 +23,8 @@ function Komisi() {
   return (
     <AppShell title="Komisi Saya" subtitle="Pak Joko · Puri Alam Gayamprit · L-1024">
       <div className="mb-7 grid grid-cols-2 gap-3">
-        <div className="surface p-5"><p className="text-[13px] text-muted-foreground">Total komisi transaksi</p><p className="mt-1 text-[28px] font-bold leading-none">{rp(total)}</p></div>
-        <div className="surface p-5"><p className="text-[13px] text-muted-foreground">Sudah cair</p><p className="mt-1 text-[28px] font-bold leading-none text-positive">{rp((total * cair) / 100)}</p></div>
+        <div className="surface p-5"><p className="text-[13px] text-muted-foreground">Total komisi transaksi</p><p className="mt-1 text-xl font-bold leading-tight md:text-[28px]">{rp(total)}</p></div>
+        <div className="surface p-5"><p className="text-[13px] text-muted-foreground">Sudah cair</p><p className="mt-1 text-xl font-bold leading-tight md:text-[28px] text-positive">{rp((total * cair) / 100)}</p></div>
       </div>
       <Section title="Empat milestone pencairan">
         <ol className="surface divide-y divide-border">
