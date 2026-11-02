@@ -1,12 +1,16 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { screenAccess } from "@/lib/roles";
+import { redirect, createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight } from "lucide-react";
 import { AppShell, ScoreBadge, StatusBadge } from "@/components/AppShell";
 import { leads, proyek } from "@/lib/data";
 
-export const Route = createFileRoute("/lead/")({
+export const Route = createFileRoute("/_authenticated/lead/")({
+  beforeLoad: ({ context }) => { if (!context.account.role || screenAccess(context.account.role, 2) === "none") throw redirect({ to: "/dashboard", replace: true }); },
   head: () => ({
     meta: [
       { title: "Lead & Pipeline — Andara Sales OS" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "description", content: "Calon pembeli Anda menurut status pipeline dan skor." },
       { property: "og:title", content: "Lead & Pipeline — Andara Sales OS" },
       { property: "og:description", content: "Calon pembeli Anda menurut status pipeline dan skor." },

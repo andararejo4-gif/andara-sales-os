@@ -1,13 +1,17 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { screenAccess } from "@/lib/roles";
+import { redirect, createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { leads } from "@/lib/data";
 
-export const Route = createFileRoute("/aktivitas/baru")({
+export const Route = createFileRoute("/_authenticated/aktivitas/baru")({
+  beforeLoad: ({ context }) => { if (!context.account.role || screenAccess(context.account.role, 7) === "none") throw redirect({ to: "/dashboard", replace: true }); },
   head: () => ({
     meta: [
       { title: "Catat Aktivitas — Andara Sales OS" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "description", content: "Catat D2D, call, chat, posting, tur, atau open table dalam lima ketukan." },
       { property: "og:title", content: "Catat Aktivitas — Andara Sales OS" },
       { property: "og:description", content: "Catat D2D, call, chat, posting, tur, atau open table dalam lima ketukan." },
@@ -45,7 +49,7 @@ function Form() {
         <Chips label="4 · Tindak lanjut" options={["Besok", "3 hari", "1 minggu", "Nurture", "Tidak perlu"]} value={lanjut} onChange={setLanjut} />
         <button
           disabled={!ok}
-          onClick={() => { toast.success("Aktivitas tersimpan"); nav({ to: "/" }); }}
+          onClick={() => { toast.success("Aktivitas tersimpan"); nav({ to: "/dashboard" }); }}
           className="h-12 w-full rounded-xl bg-primary text-base font-semibold text-primary-foreground shadow-fab transition-opacity disabled:opacity-40 disabled:shadow-none"
         >
           5 · Simpan

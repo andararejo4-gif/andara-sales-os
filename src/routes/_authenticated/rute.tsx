@@ -1,12 +1,16 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { screenAccess } from "@/lib/roles";
+import { redirect, createFileRoute } from "@tanstack/react-router";
 import { Navigation } from "lucide-react";
 import { AppShell } from "@/components/AppShell";
 import { rute } from "@/lib/data";
 
-export const Route = createFileRoute("/rute")({
+export const Route = createFileRoute("/_authenticated/rute")({
+  beforeLoad: ({ context }) => { if (!context.account.role || screenAccess(context.account.role, 26) === "none") throw redirect({ to: "/dashboard", replace: true }); },
   head: () => ({
     meta: [
       { title: "Rute Harian — Andara Sales OS" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "description", content: "Urutan titik canvassing yang akan dikunjungi hari ini." },
       { property: "og:title", content: "Rute Harian — Andara Sales OS" },
       { property: "og:description", content: "Urutan titik canvassing yang akan dikunjungi hari ini." },

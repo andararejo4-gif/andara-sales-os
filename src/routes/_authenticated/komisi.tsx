@@ -1,12 +1,16 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { screenAccess } from "@/lib/roles";
+import { redirect, createFileRoute } from "@tanstack/react-router";
 import { CheckCircle2, Clock, Lock } from "lucide-react";
 import { AppShell, Section } from "@/components/AppShell";
 import { milestoneKomisi } from "@/lib/data";
 
-export const Route = createFileRoute("/komisi")({
+export const Route = createFileRoute("/_authenticated/komisi")({
+  beforeLoad: ({ context }) => { if (!context.account.role || screenAccess(context.account.role, 14) === "none") throw redirect({ to: "/dashboard", replace: true }); },
   head: () => ({
     meta: [
       { title: "Komisi Saya — Andara Sales OS" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "description", content: "Komisi berjalan dan empat milestone pencairan." },
       { property: "og:title", content: "Komisi Saya — Andara Sales OS" },
       { property: "og:description", content: "Komisi berjalan dan empat milestone pencairan." },

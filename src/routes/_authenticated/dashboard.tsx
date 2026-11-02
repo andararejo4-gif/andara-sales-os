@@ -3,10 +3,12 @@ import { ArrowRight, Plus, Sparkles, Wallet } from "lucide-react";
 import { AppShell, Section } from "@/components/AppShell";
 import { kartuAktivitas, omzet, skorHarian, tierInfo, tugasAI } from "@/lib/data";
 
-export const Route = createFileRoute("/")({
+export const Route = createFileRoute("/_authenticated/dashboard")({
   head: () => ({
     meta: [
       { title: "Beranda — Andara Sales OS" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "description", content: "Skor harian, aktivitas, omzet, dan tugas AI untuk Sales Executive." },
       { property: "og:title", content: "Beranda — Andara Sales OS" },
       { property: "og:description", content: "Skor harian, aktivitas, omzet, dan tugas AI untuk Sales Executive." },

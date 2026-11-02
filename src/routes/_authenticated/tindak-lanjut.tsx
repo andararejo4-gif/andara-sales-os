@@ -1,13 +1,17 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { screenAccess } from "@/lib/roles";
+import { redirect, createFileRoute, Link } from "@tanstack/react-router";
 import { Check, MessageCircle, Phone, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { samarkan, findLead, tindakLanjut, tingkatLewat } from "@/lib/data";
 
-export const Route = createFileRoute("/tindak-lanjut")({
+export const Route = createFileRoute("/_authenticated/tindak-lanjut")({
+  beforeLoad: ({ context }) => { if (!context.account.role || screenAccess(context.account.role, 9) === "none") throw redirect({ to: "/dashboard", replace: true }); },
   head: () => ({
     meta: [
       { title: "Antrean Tindak Lanjut — Andara Sales OS" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { name: "description", content: "Siapa yang harus dihubungi sekarang, lengkap dengan draf pesan." },
       { property: "og:title", content: "Antrean Tindak Lanjut — Andara Sales OS" },
       { property: "og:description", content: "Siapa yang harus dihubungi sekarang, lengkap dengan draf pesan." },
@@ -30,7 +34,8 @@ function Queue() {
       )}
       <div className="grid gap-4 md:grid-cols-2">
         {list.map((t) => {
-          const l = findLead(t.leadId)!;
+          const l = findLead(t.leadId);
+          if (!l) return null;
           const tone = tingkatLewat(t.lewat);
           return (
             <article key={t.leadId} className="surface p-5">
