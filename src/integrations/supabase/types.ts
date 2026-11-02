@@ -153,6 +153,57 @@ export type Database = {
           },
         ]
       }
+      commissions: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          lead_id: string | null
+          milestone: string
+          owner_id: string
+          project_id: string | null
+          status: string
+          team_id: string | null
+        }
+        Insert: {
+          amount?: number
+          created_at?: string
+          id?: string
+          lead_id?: string | null
+          milestone: string
+          owner_id: string
+          project_id?: string | null
+          status?: string
+          team_id?: string | null
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          lead_id?: string | null
+          milestone?: string
+          owner_id?: string
+          project_id?: string | null
+          status?: string
+          team_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "commissions_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "sales_leads"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "commissions_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "sales_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       event_reminders: {
         Row: {
           created_at: string
@@ -188,10 +239,96 @@ export type Database = {
           },
         ]
       }
+      kpi_logs: {
+        Row: {
+          created_at: string
+          id: string
+          logged_on: string
+          metric: string
+          owner_id: string
+          project_id: string | null
+          team_id: string | null
+          value: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          logged_on?: string
+          metric: string
+          owner_id: string
+          project_id?: string | null
+          team_id?: string | null
+          value?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          logged_on?: string
+          metric?: string
+          owner_id?: string
+          project_id?: string | null
+          team_id?: string | null
+          value?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "kpi_logs_project_id_fkey"
+            columns: ["project_id"]
+            isOneToOne: false
+            referencedRelation: "sales_projects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      lead_change_requests: {
+        Row: {
+          applied_at: string | null
+          approved_by: string | null
+          created_at: string
+          id: string
+          lead_id: string
+          proposed: Json
+          reason: string
+          requested_by: string
+          status: string
+        }
+        Insert: {
+          applied_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          id?: string
+          lead_id: string
+          proposed: Json
+          reason: string
+          requested_by?: string
+          status?: string
+        }
+        Update: {
+          applied_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          id?: string
+          lead_id?: string
+          proposed?: Json
+          reason?: string
+          requested_by?: string
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "lead_change_requests_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "sales_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       sales_activities: {
         Row: {
           id: string
           kind: string
+          lead_id: string | null
           note: string
           occurred_at: string
           owner_id: string
@@ -201,6 +338,7 @@ export type Database = {
         Insert: {
           id?: string
           kind: string
+          lead_id?: string | null
           note?: string
           occurred_at?: string
           owner_id: string
@@ -210,6 +348,7 @@ export type Database = {
         Update: {
           id?: string
           kind?: string
+          lead_id?: string | null
           note?: string
           occurred_at?: string
           owner_id?: string
@@ -217,6 +356,13 @@ export type Database = {
           team_id?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "sales_activities_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "sales_leads"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "sales_activities_project_id_fkey"
             columns: ["project_id"]
@@ -228,31 +374,52 @@ export type Database = {
       }
       sales_leads: {
         Row: {
+          address: string
           created_at: string
           id: string
+          lead_value: number
           nickname: string
           owner_id: string
+          phone: string
           project_id: string | null
+          prospect_name: string
+          source: string
           status: string
           team_id: string | null
+          verified_at: string | null
+          verified_by: string | null
         }
         Insert: {
+          address?: string
           created_at?: string
           id?: string
+          lead_value?: number
           nickname: string
           owner_id: string
+          phone?: string
           project_id?: string | null
+          prospect_name?: string
+          source?: string
           status?: string
           team_id?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
         }
         Update: {
+          address?: string
           created_at?: string
           id?: string
+          lead_value?: number
           nickname?: string
           owner_id?: string
+          phone?: string
           project_id?: string | null
+          prospect_name?: string
+          source?: string
           status?: string
           team_id?: string | null
+          verified_at?: string | null
+          verified_by?: string | null
         }
         Relationships: [
           {
@@ -339,6 +506,27 @@ export type Database = {
           },
         ]
       }
+      social_analytics_links: {
+        Row: {
+          created_by: string
+          id: string
+          label: string
+          url: string
+        }
+        Insert: {
+          created_by?: string
+          id?: string
+          label: string
+          url: string
+        }
+        Update: {
+          created_by?: string
+          id?: string
+          label?: string
+          url?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           id: string
@@ -413,6 +601,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      apply_lead_change: { Args: { _request: string }; Returns: undefined }
       can_read_scope: {
         Args: { _owner: string; _project: string; _team: string }
         Returns: boolean
@@ -429,6 +618,26 @@ export type Database = {
         }
         Returns: boolean
       }
+      request_lead_change: {
+        Args: { _lead: string; _proposed: Json; _reason: string }
+        Returns: string
+      }
+      review_lead_change: {
+        Args: { _approve: boolean; _request: string }
+        Returns: undefined
+      }
+      save_sales_lead: {
+        Args: {
+          _address: string
+          _id: string
+          _name: string
+          _note?: string
+          _phone: string
+          _source: string
+          _status: string
+        }
+        Returns: string
+      }
       staff_directory: {
         Args: never
         Returns: {
@@ -444,6 +653,10 @@ export type Database = {
       valid_owner_scope: {
         Args: { _owner: string; _project: string; _team: string }
         Returns: boolean
+      }
+      verify_sales_lead: {
+        Args: { _id: string; _value: number }
+        Returns: undefined
       }
     }
     Enums: {
