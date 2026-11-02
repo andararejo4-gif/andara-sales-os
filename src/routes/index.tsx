@@ -31,7 +31,7 @@ function tone(n: number, t: number) {
 }
 
 function Dashboard() {
-  const tier = tierInfo[skorHarian.tier - 1];
+  const tier = tierInfo[skorHarian.tier - 1] ?? tierInfo[0]!;
   const pct = Math.round((omzet.capai / omzet.target) * 100);
   return (
     <AppShell title="Halo, Wahyu" subtitle="Sales Executive · Klaten · Green Gumulan">
