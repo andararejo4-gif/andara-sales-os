@@ -19,6 +19,7 @@ import { Route as AuthenticatedKomisiRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedRuteRouteImport } from './routes/_authenticated/rute'
 import { Route as AuthenticatedTindakLanjutRouteImport } from './routes/_authenticated/tindak-lanjut'
 import { Route as AuthenticatedAktivitasBaruRouteImport } from './routes/_authenticated/aktivitas.baru'
+import { Route as AuthenticatedDataKindRouteImport } from './routes/_authenticated/data.$kind'
 import { Route as AuthenticatedLeadIndexRouteImport } from './routes/_authenticated/lead.index'
 import { Route as AuthenticatedLeadIdRouteImport } from './routes/_authenticated/lead.$id'
 import { Route as AuthenticatedRuangFeatureRouteImport } from './routes/_authenticated/ruang.$feature'
@@ -75,6 +76,11 @@ const AuthenticatedAktivitasBaruRoute =
     path: '/aktivitas/baru',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedDataKindRoute = AuthenticatedDataKindRouteImport.update({
+  id: '/data/$kind',
+  path: '/data/$kind',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedLeadIndexRoute = AuthenticatedLeadIndexRouteImport.update({
   id: '/lead/',
   path: '/lead/',
@@ -108,6 +114,7 @@ export interface FileRoutesByFullPath {
   '/rute': typeof AuthenticatedRuteRoute
   '/tindak-lanjut': typeof AuthenticatedTindakLanjutRoute
   '/aktivitas/baru': typeof AuthenticatedAktivitasBaruRoute
+  '/data/$kind': typeof AuthenticatedDataKindRoute
   '/lead/$id': typeof AuthenticatedLeadIdRoute
   '/ruang/$feature': typeof AuthenticatedRuangFeatureRoute
   '/lead/': typeof AuthenticatedLeadIndexRoute
@@ -123,6 +130,7 @@ export interface FileRoutesByTo {
   '/rute': typeof AuthenticatedRuteRoute
   '/tindak-lanjut': typeof AuthenticatedTindakLanjutRoute
   '/aktivitas/baru': typeof AuthenticatedAktivitasBaruRoute
+  '/data/$kind': typeof AuthenticatedDataKindRoute
   '/lead/$id': typeof AuthenticatedLeadIdRoute
   '/ruang/$feature': typeof AuthenticatedRuangFeatureRoute
   '/lead': typeof AuthenticatedLeadIndexRoute
@@ -140,6 +148,7 @@ export interface FileRoutesById {
   '/_authenticated/rute': typeof AuthenticatedRuteRoute
   '/_authenticated/tindak-lanjut': typeof AuthenticatedTindakLanjutRoute
   '/_authenticated/aktivitas/baru': typeof AuthenticatedAktivitasBaruRoute
+  '/_authenticated/data/$kind': typeof AuthenticatedDataKindRoute
   '/_authenticated/lead/$id': typeof AuthenticatedLeadIdRoute
   '/_authenticated/ruang/$feature': typeof AuthenticatedRuangFeatureRoute
   '/_authenticated/lead/': typeof AuthenticatedLeadIndexRoute
@@ -157,6 +166,7 @@ export interface FileRouteTypes {
     | '/rute'
     | '/tindak-lanjut'
     | '/aktivitas/baru'
+    | '/data/$kind'
     | '/lead/$id'
     | '/ruang/$feature'
     | '/lead/'
@@ -172,6 +182,7 @@ export interface FileRouteTypes {
     | '/rute'
     | '/tindak-lanjut'
     | '/aktivitas/baru'
+    | '/data/$kind'
     | '/lead/$id'
     | '/ruang/$feature'
     | '/lead'
@@ -188,6 +199,7 @@ export interface FileRouteTypes {
     | '/_authenticated/rute'
     | '/_authenticated/tindak-lanjut'
     | '/_authenticated/aktivitas/baru'
+    | '/_authenticated/data/$kind'
     | '/_authenticated/lead/$id'
     | '/_authenticated/ruang/$feature'
     | '/_authenticated/lead/'
@@ -274,6 +286,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAktivitasBaruRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/data/$kind': {
+      id: '/_authenticated/data/$kind'
+      path: '/data/$kind'
+      fullPath: '/data/$kind'
+      preLoaderRoute: typeof AuthenticatedDataKindRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/lead/': {
       id: '/_authenticated/lead/'
       path: '/lead'
@@ -312,6 +331,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedRuteRoute: typeof AuthenticatedRuteRoute
   AuthenticatedTindakLanjutRoute: typeof AuthenticatedTindakLanjutRoute
   AuthenticatedAktivitasBaruRoute: typeof AuthenticatedAktivitasBaruRoute
+  AuthenticatedDataKindRoute: typeof AuthenticatedDataKindRoute
   AuthenticatedLeadIdRoute: typeof AuthenticatedLeadIdRoute
   AuthenticatedRuangFeatureRoute: typeof AuthenticatedRuangFeatureRoute
   AuthenticatedLeadIndexRoute: typeof AuthenticatedLeadIndexRoute
@@ -324,6 +344,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedRuteRoute: AuthenticatedRuteRoute,
   AuthenticatedTindakLanjutRoute: AuthenticatedTindakLanjutRoute,
   AuthenticatedAktivitasBaruRoute: AuthenticatedAktivitasBaruRoute,
+  AuthenticatedDataKindRoute: AuthenticatedDataKindRoute,
   AuthenticatedLeadIdRoute: AuthenticatedLeadIdRoute,
   AuthenticatedRuangFeatureRoute: AuthenticatedRuangFeatureRoute,
   AuthenticatedLeadIndexRoute: AuthenticatedLeadIndexRoute,
