@@ -16,3 +16,5 @@
 - Operational revision data uses scoped projects, sales leads, transactions, activities, AI video publication records and calendar events; demo sales records never contribute to live totals or exports.
 - Calendar reminders are durable in-app notifications generated idempotently by an authenticated managed scheduled callback using Asia/Jakarta dates.
 - IT maintenance exposes authorized application records and audit logs only, never service credentials or arbitrary SQL execution.
+- Lead mutations use authenticated transactional database RPCs with scoped authorization; IT submits immutable change requests approved by a scoped SM and applies each once to prevent approval bypass.
+- Operational lead screens, commission summaries, KPI records and social analytics links read persisted scoped records; account roles stay separate from user-editable biodata to prevent privilege escalation.
