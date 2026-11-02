@@ -36,6 +36,13 @@
       "when": 1793628434094,
       "tag": "0004_lead_creation_rpc",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1793628811227,
+      "tag": "0005_maintenance_scope_and_commission_privacy",
+      "breakpoints": true
     }
   ]
 }
