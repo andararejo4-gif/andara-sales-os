@@ -1,4 +1,8 @@
 # Role-based login
+- [ ] Apply revision MD: live revenue, interactive metrics, content attribution and lead hierarchy.
+- [ ] Add protected ADM/TL assignments, IT maintenance access, project creation and daily report downloads.
+- [ ] Add calendar agendas and automatic H-1/day-of in-app reminders.
+- [ ] Verify revision permissions, calculations, reminders and available end-to-end flows.
 - [x] Add account login, recovery, and sign-out.
 - [x] Protect existing pages and enforce the six document roles.
 - [x] Add role-specific dashboards and scoped work-item workspaces; operational metric values remain empty until real sources are connected.
