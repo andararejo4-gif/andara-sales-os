@@ -8,6 +8,8 @@ import {revisionOptions} from '@/lib/revision-query';
 import {canExportDaily} from '@/lib/roles';
 import {leadAttribution,publicationAttribution} from '@/lib/revision';
 import {Agenda} from '@/components/Agenda';
+import {AnalyticsLinks} from '@/components/AnalyticsLinks';
+import {LeadChanges} from '@/components/LeadChanges';
 
 export function RevisionDashboard(){
  const {data}=useSuspenseQuery(revisionOptions),{data:account}=useSuspenseQuery(accountOptions);
@@ -15,6 +17,9 @@ export function RevisionDashboard(){
  const metrics=[{label:'Total Lead',value:data.leads.length,kind:'leads',icon:Users},{label:'Proyek',value:data.projects.length,kind:'projects',icon:Building2},{label:'Aktivitas',value:data.activities.length,kind:'activities',icon:FileDown},{label:'Video AI',value:data.videos.length,kind:'videos',icon:Film}] as const;
  const staff=(id:string|null)=>data.staff.find(s=>s.user_id===id);
  return <>
+  {(role==='dm'||role==='sm'||role==='dir'||role==='it')&&<AnalyticsLinks/>}
+  {(role==='sm'||role==='it')&&<LeadChanges/>}
+  {data.kpis.length>0&&<Section title="KPI tercatat"><div className="divide-y divide-border">{data.kpis.slice(0,8).map(k=><p key={k.id} className="flex flex-wrap justify-between gap-2 py-3"><span>{k.metric} · {staff(k.owner_id)?.staff_name||'Staf'}</span><span className="font-semibold">{Number(k.value).toLocaleString('id-ID')} · {k.logged_on}</span></p>)}</div></Section>}
   <div className="mb-7 grid grid-cols-2 gap-3 lg:grid-cols-4">{metrics.filter(m=>role!=='dm'||m.kind==='videos'||m.kind==='projects').map(({label,value,kind,icon:Icon})=><Button asChild variant="outline" key={kind} className="h-auto min-h-28 flex-col items-start justify-between whitespace-normal p-4"><Link to="/data/$kind" params={{kind}}><span className="flex w-full items-center justify-between text-muted-foreground"><Icon/><ArrowUpRight/></span><span className="text-2xl font-bold">{value}</span><span>{label}</span></Link></Button>)}</div>
   {(role==='sm'||role==='tl'||role==='dir'||role==='it')&&<Section title="Omzet bulan ini"><Button variant="outline" asChild className="h-auto w-full justify-between whitespace-normal p-5"><Link to="/data/$kind" params={{kind:'transactions'}}><span className="text-left"><span className="mb-2 flex items-center gap-2 text-muted-foreground"><Wallet/> Closing valid</span><span className="block text-2xl font-bold">{data.revenue.label}</span></span><span className="flex items-center gap-3 text-positive">{Number(data.revenue.percent.toFixed(1)).toLocaleString('id-ID')}%<ArrowUpRight/></span></Link></Button></Section>}
   {canExportDaily(role)&&<Button asChild variant="outline" className="mb-7 h-11"><Link to="/data/$kind" params={{kind:'activities'}}><FileDown/>Laporan harian SE</Link></Button>}

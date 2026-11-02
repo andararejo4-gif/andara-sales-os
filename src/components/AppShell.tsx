@@ -8,6 +8,7 @@ import { roleLabels, screenAccess, workspaces, workspaceAllowed } from '@/lib/ro
 import { SignOut } from '@/components/SignOut';
 import { Button } from '@/components/ui/button';
 import { BriefcaseBusiness } from 'lucide-react';
+import {canWriteLeads} from '@/lib/lead-rules';
 
 const nav = [
   { to: "/dashboard", label: "Beranda", icon: Home, screen:1 },
@@ -22,7 +23,7 @@ export function AppShell({ title, subtitle, children, hideFab }: { title: string
   const {data:account}=useSuspenseQuery(accountOptions);
   const role=account.role;
   const visibleNav=nav.filter(n=>role&&screenAccess(role,n.screen)!=='none');
-  const canActivity=role&&screenAccess(role,7)==='full';
+  const canActivity=canWriteLeads(role);
   const active = (to: string) => pathname.startsWith(to);
 
   return (
@@ -46,7 +47,7 @@ export function AppShell({ title, subtitle, children, hideFab }: { title: string
           {role==='it'&&<Button asChild variant="ghost" className="h-11 justify-start"><Link to="/data/$kind" params={{kind:'audit'}}><ShieldCheck/>Log Audit</Link></Button>}
         </nav>
         {canActivity&&<Link to="/aktivitas/baru" className="flex h-11 items-center justify-center gap-2 rounded-xl bg-primary font-semibold text-primary-foreground">
-          <Plus className="size-5" /> Catat Aktivitas
+          <Plus className="size-5" /> Leads Baru
         </Link>}
         <div className="mt-5 flex items-center gap-3 border-t border-sidebar-border pt-5">
           <div className="min-w-0 text-[13px]"><p className="truncate font-semibold text-sidebar-accent-foreground">{account.email}</p><p>{role?roleLabels[role]:'Akses belum ditetapkan'}</p></div>
@@ -67,7 +68,7 @@ export function AppShell({ title, subtitle, children, hideFab }: { title: string
       </main>
 
       {!hideFab && canActivity && (
-        <Link to="/aktivitas/baru" aria-label="Catat aktivitas" className="fixed bottom-24 right-5 z-30 grid size-14 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-fab md:hidden">
+        <Link to="/aktivitas/baru" aria-label="Leads Baru" className="fixed bottom-24 right-5 z-30 grid size-14 place-items-center rounded-2xl bg-primary text-primary-foreground shadow-fab md:hidden">
           <Plus className="size-6" />
         </Link>
       )}

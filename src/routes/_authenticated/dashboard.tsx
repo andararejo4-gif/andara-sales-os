@@ -109,7 +109,7 @@ function Dashboard() {
       </Section>
 
       <div className="grid grid-cols-3 gap-2.5">
-        <Link to="/lead" className="flex h-14 items-center justify-center gap-1.5 rounded-xl bg-primary text-[15px] font-semibold text-primary-foreground"><Plus className="size-4" /> Lead</Link>
+        <Link to="/aktivitas/baru" className="flex h-14 items-center justify-center gap-1.5 rounded-xl bg-primary text-[15px] font-semibold text-primary-foreground"><Plus className="size-4" /> Leads</Link>
         <Link to="/aktivitas/baru" className="flex h-14 items-center justify-center gap-1.5 rounded-xl bg-success text-[15px] font-semibold text-primary-foreground"><Plus className="size-4" /> Aktivitas</Link>
         <Link to="/komisi" className="flex h-14 items-center justify-center gap-1.5 rounded-xl bg-warning text-[15px] font-semibold text-primary-foreground"><Wallet className="size-4" /> Komisi</Link>
       </div>

@@ -1,52 +1,23 @@
-import { screenAccess } from "@/lib/roles";
-import { redirect, createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight } from "lucide-react";
-import { AppShell, ScoreBadge, StatusBadge } from "@/components/AppShell";
-import { leads, proyek } from "@/lib/data";
-
-export const Route = createFileRoute("/_authenticated/lead/")({
-  beforeLoad: ({ context }) => { if (!context.account.role || screenAccess(context.account.role, 2) === "none") throw redirect({ to: "/dashboard", replace: true }); },
-  head: () => ({
-    meta: [
-      { title: "Lead & Pipeline — Andara Sales OS" },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "description", content: "Calon pembeli Anda menurut status pipeline dan skor." },
-      { property: "og:title", content: "Lead & Pipeline — Andara Sales OS" },
-      { property: "og:description", content: "Calon pembeli Anda menurut status pipeline dan skor." },
-    ],
-  }),
-  component: LeadList,
+import {createFileRoute,redirect,Link} from '@tanstack/react-router';
+import {useSuspenseQuery} from '@tanstack/react-query';
+import {ArrowRight,Plus} from 'lucide-react';
+import {AppShell,StatusBadge} from '@/components/AppShell';
+import {Button} from '@/components/ui/button';
+import {revisionOptions} from '@/lib/revision-query';
+import {canWriteLeads,leadStatuses} from '@/lib/lead-rules';
+import {leadAttribution} from '@/lib/revision';
+import type {Status} from '@/lib/data';
+export const Route=createFileRoute('/_authenticated/lead/')({
+ beforeLoad:({context})=>{if(!context.account.role||context.account.role==='dm')throw redirect({to:'/dashboard'});},
+ loader:({context})=>context.queryClient.ensureQueryData(revisionOptions),
+ head:()=>({meta:[{title:'Lead & Pipeline — Andara Sales OS'},{name:'description',content:'Prospek operasional dan penanggung jawab dalam lingkup Anda.'},{property:'og:title',content:'Lead & Pipeline — Andara Sales OS'},{property:'og:description',content:'Pipeline penjualan dan verifikasi prospek Andara.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary'}]}),component:LeadList,
 });
-
-function LeadList() {
-  const {account}=Route.useRouteContext();
-  const canDetail=account.role&&screenAccess(account.role,3)!=='none';
-  return (
-    <AppShell title="Lead & Pipeline" subtitle={`${leads.length} calon pembeli · Klaten`}>
-      <div className="mb-7 grid gap-3 sm:grid-cols-2">
-        {proyek.map((p) => (
-          <div key={p.nama} className="surface p-4">
-            <p className="font-semibold">{p.nama}</p>
-            <p className="text-[13px] text-muted-foreground">{p.lokasi} · {p.tipe}</p>
-            <p className="mt-2 text-[13px]"><b className={p.sisa <= 3 ? "text-destructive" : "text-positive"}>Sisa {p.sisa} unit</b> · {p.harga}</p>
-          </div>
-        ))}
-      </div>
-      <div className="surface divide-y divide-border">
-        {[...leads].sort((a, b) => b.skor - a.skor).map((l) => (
-          <div key={l.id} className="flex items-center gap-3 p-4 hover:bg-muted/50">
-            <ScoreBadge skor={l.skor} />
-            <div className="min-w-0 flex-1">
-              <p className="font-semibold">{canDetail?<Link to="/lead/$id" params={{id:l.id}}>{l.panggilan}</Link>:l.panggilan}</p>
-              <p className="truncate text-[13px] text-muted-foreground">{l.proyek} · {l.sumber}</p>
-            </div>
-            <StatusBadge status={l.status} />
-            <ArrowRight className="hidden size-4 text-muted-foreground sm:block" />
-          </div>
-        ))}
-      </div>
-      <p className="mt-4 text-[13px] text-muted-foreground">Privasi: hanya nama panggilan pada tahap prospek; nomor selalu tersamar.</p>
-    </AppShell>
-  );
+function LeadList(){
+ const {data}=useSuspenseQuery(revisionOptions),{account}=Route.useRouteContext();
+ const staff=(id:string|null)=>data.staff.find(s=>s.user_id===id);
+ return <AppShell title="Lead & Pipeline" subtitle={`${data.leads.length} prospek`} hideFab>
+ {canWriteLeads(account.role)&&<Button asChild className="mb-6 min-h-11"><Link to="/aktivitas/baru"><Plus/>Leads Baru</Link></Button>}
+ <div className="mb-6 flex flex-wrap gap-2">{leadStatuses.filter(status=>data.leads.some(l=>l.status===status)).map(status=><span key={status} className="text-sm text-muted-foreground">{status} · {data.leads.filter(l=>l.status===status).length}</span>)}</div>
+ {data.leads.length?<div className="divide-y divide-border">{data.leads.map(lead=>{const se=staff(lead.owner_id);return <Button asChild variant="ghost" key={lead.id} className="h-auto w-full justify-between whitespace-normal border-b border-border py-5 text-left"><Link to="/lead/$id" params={{id:lead.id}}><span className="min-w-0 flex-1"><span className="block break-words font-semibold">{account.role==='tl'||account.role==='sm'?leadAttribution(lead.nickname,se,staff(se?.tl_id??null),account.role):lead.nickname}</span><span className="mt-2 block text-sm text-muted-foreground">{lead.source} · {lead.verified_at?'Terverifikasi':'Belum diverifikasi'}</span></span><span className="ml-3 flex shrink-0 items-center gap-2"><StatusBadge status={lead.status as Status}/><ArrowRight className="size-4"/></span></Link></Button>;})}</div>:<p className="border-y border-border py-12 text-center text-muted-foreground">Belum ada lead operasional.</p>}
+ </AppShell>;
 }

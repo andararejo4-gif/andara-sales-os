@@ -1,89 +1,35 @@
-import { screenAccess } from "@/lib/roles";
-import { redirect, createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { MapPin, MessageCircle, Phone, Sparkles } from "lucide-react";
-import { AppShell, Section, StatusBadge } from "@/components/AppShell";
-import { findLead, jalurPipeline, riwayat, samarkan, statusInfo } from "@/lib/data";
-
-export const Route = createFileRoute("/_authenticated/lead/$id")({
-  beforeLoad: ({ context }) => { if (!context.account.role || screenAccess(context.account.role, 3) === "none") throw redirect({ to: "/dashboard", replace: true }); },
-  loader: ({ params }) => {
-    const lead = findLead(params.id);
-    if (!lead) throw notFound();
-    return { lead };
-  },
-  head: ({ loaderData }) => ({
-    meta: [
-      { title: loaderData ? `${loaderData.lead.panggilan} — Andara Sales OS` : "Lead tidak ditemukan" },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary" },
-      { name: "description", content: "Status pipeline, skor, riwayat, dan langkah berikutnya." },
-      { property: "og:title", content: "Rincian Lead — Andara Sales OS" },
-      { property: "og:description", content: "Status pipeline, skor, riwayat, dan langkah berikutnya." },
-    ],
-  }),
-  notFoundComponent: () => <div className="p-10 text-center">Lead tidak ditemukan. <Link to="/lead" className="text-primary">Kembali</Link></div>,
-  component: LeadDetail,
+import {useState} from 'react';
+import {createFileRoute,redirect,Link,notFound} from '@tanstack/react-router';
+import {useSuspenseQuery,useMutation,useQueryClient} from '@tanstack/react-query';
+import {useServerFn} from '@tanstack/react-start';
+import {Pencil,CheckCircle,Phone,MapPin} from 'lucide-react';
+import {toast} from 'sonner';
+import {AppShell,Section,StatusBadge} from '@/components/AppShell';
+import {Button} from '@/components/ui/button';
+import {Input} from '@/components/ui/input';
+import {LeadForm} from '@/components/LeadForm';
+import {LeadChanges} from '@/components/LeadChanges';
+import {revisionOptions} from '@/lib/revision-query';
+import {canWriteLeads,canVerifyLeads} from '@/lib/lead-rules';
+import {verifyLead} from '@/lib/leads.functions';
+import {samarkan,type Status} from '@/lib/data';
+export const Route=createFileRoute('/_authenticated/lead/$id')({
+ beforeLoad:({context})=>{if(!context.account.role||context.account.role==='dm')throw redirect({to:'/dashboard'});},
+ loader:async({context,params})=>{const data=await context.queryClient.ensureQueryData(revisionOptions);if(!data.leads.some(l=>l.id===params.id))throw notFound();},
+ head:()=>({meta:[{title:'Rincian Prospek — Andara Sales OS'},{name:'description',content:'Biodata, pipeline, riwayat aktivitas dan verifikasi lead.'},{property:'og:title',content:'Rincian Prospek — Andara Sales OS'},{property:'og:description',content:'Kelola dan verifikasi lead sesuai hak akses.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary'}]}),
+ notFoundComponent:()=> <div className="p-10 text-center">Lead tidak ditemukan. <Link to="/lead">Kembali</Link></div>,component:LeadDetail,
 });
-
-function LeadDetail() {
-  const { lead } = Route.useLoaderData();
-  const idx = jalurPipeline.indexOf(lead.status);
-  return (
-    <AppShell title={lead.panggilan} subtitle={`${lead.id} · ${lead.proyek}`}>
-      <div className="md:grid md:grid-cols-[1fr_320px] md:gap-8">
-        <div>
-          <div className="surface mb-7 p-5">
-            <div className="flex items-center justify-between">
-              <StatusBadge status={lead.status} />
-              <span className="text-[13px] text-muted-foreground">Dihitung: {statusInfo[lead.status].dihitung}</span>
-            </div>
-            <div className="mt-4 grid grid-cols-6 gap-1">
-              {jalurPipeline.map((s, i) => (
-                <div key={s}>
-                  <div className={`h-1.5 rounded-full ${idx >= 0 && i <= idx ? "bg-primary" : "bg-muted"}`} />
-                  <p className={`mt-1.5 text-center text-[13px] ${s === lead.status ? "font-bold text-primary" : "text-muted-foreground"}`}>{s}</p>
-                </div>
-              ))}
-            </div>
-            {lead.sla && <p className="mt-3 rounded-lg bg-alert/10 px-3 py-2 text-[13px] font-medium text-alert">SLA: {lead.sla}</p>}
-            <div className="mt-5 grid grid-cols-2 gap-2">
-              <a href="#" className="flex h-11 items-center justify-center gap-2 rounded-xl bg-primary font-semibold text-primary-foreground"><Phone className="size-4" /> Call</a>
-              <a href="#" className="flex h-11 items-center justify-center gap-2 rounded-xl border border-border font-semibold"><MessageCircle className="size-4" /> Chat</a>
-            </div>
-            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-[13px] text-muted-foreground">
-              <span className="flex items-center gap-1.5"><Phone className="size-3.5" /> {samarkan(lead.telp)}</span>
-              <span className="flex items-center gap-1.5"><MapPin className="size-3.5" /> {lead.area}</span>
-              <span>Sumber: {lead.sumber}</span>
-            </div>
-          </div>
-
-          <Section title="Langkah berikutnya">
-            <div className="surface border-l-4 border-l-primary p-4 font-medium">{lead.langkah}</div>
-          </Section>
-
-          <Section title="Riwayat">
-            <ol className="relative ml-2 border-l border-border">
-              {riwayat.map((r) => (
-                <li key={r.waktu} className="mb-5 ml-5">
-                  <span className="absolute -left-[5px] mt-1.5 size-2.5 rounded-full bg-primary" />
-                  <p className="text-[13px] text-muted-foreground">{r.waktu} · {r.jenis}</p>
-                  <p>{r.catatan}</p>
-                </li>
-              ))}
-            </ol>
-          </Section>
-        </div>
-
-        <Section title="Skor & alasannya">
-          <div className="surface p-5">
-            <p className="text-[28px] font-bold leading-none">{lead.skor}<span className="text-base text-muted-foreground">/100</span></p>
-            <p className="mt-3 flex items-center gap-1.5 text-[13px] font-semibold text-ai"><Sparkles className="size-3.5" /> Dinilai AI — periksa dulu</p>
-            <ul className="mt-2 space-y-2">
-              {lead.alasan.map((a) => <li key={a} className="flex gap-2"><span className="text-positive">✓</span>{a}</li>)}
-            </ul>
-          </div>
-        </Section>
-      </div>
-    </AppShell>
-  );
+function LeadDetail(){
+ const {data}=useSuspenseQuery(revisionOptions),{account}=Route.useRouteContext(),{id}=Route.useParams();
+ const lead=data.leads.find(l=>l.id===id),[editing,setEditing]=useState(false),[value,setValue]=useState(''),qc=useQueryClient(),verify=useServerFn(verifyLead);
+ const mutation=useMutation({mutationFn:()=>verify({data:{id,value:Number(value)}}),onSuccess:()=>{void qc.invalidateQueries({queryKey:['revision']});toast.success('Nilai lead terverifikasi.');},onError:error=>toast.error(error.message)});
+ if(!lead)return null;
+ const writable=canWriteLeads(account.role)&&(account.role!=='se'||lead.owner_id===account.userId);
+ return <AppShell title={lead.nickname} subtitle={data.projects.find(p=>p.id===lead.project_id)?.name} hideFab>
+ <div className="mb-6 flex flex-wrap items-center justify-between gap-3"><StatusBadge status={lead.status as Status}/>{(writable||account.role==='it')&&<Button variant="outline" onClick={()=>setEditing(!editing)}><Pencil/>{account.role==='it'?'Ajukan perubahan':'Update Leads/Prospek'}</Button>}</div>
+ {editing?<LeadForm key={lead.id} lead={lead} maintenance={account.role==='it'}/>:<><dl className="mb-7 grid gap-4 border-y border-border py-5 sm:grid-cols-2"><div><dt className="text-sm text-muted-foreground">Nama prospek</dt><dd className="mt-1 font-medium">{lead.prospect_name||lead.nickname}</dd></div><div><dt className="flex gap-2 text-sm text-muted-foreground"><Phone className="size-4"/>Telp</dt><dd className="mt-1">{lead.phone?samarkan(lead.phone):'—'}</dd></div><div><dt className="flex gap-2 text-sm text-muted-foreground"><MapPin className="size-4"/>Alamat</dt><dd className="mt-1 break-words">{lead.address||'—'}</dd></div><div><dt className="text-sm text-muted-foreground">Sumber leads</dt><dd className="mt-1">{lead.source}</dd></div></dl>
+ <Section title="Verifikasi nilai lead"><p className="mb-3">Rp {Number(lead.lead_value).toLocaleString('id-ID')} · {lead.verified_at?'Terverifikasi':'Belum diverifikasi'}</p>{canVerifyLeads(account.role)&&<form className="flex flex-wrap items-end gap-3" onSubmit={e=>{e.preventDefault();mutation.mutate();}}><label className="text-sm font-medium">Nilai lead (Rp)<Input required min="0" type="number" value={value} onChange={e=>setValue(e.target.value)} className="mt-2"/></label><Button disabled={mutation.isPending} type="submit"><CheckCircle/>Konfirmasi nilai</Button></form>}</Section>
+ <Section title="Riwayat aktivitas">{data.activities.filter(a=>a.lead_id===id).map(a=><article key={a.id} className="border-b border-border py-4"><p className="font-medium">{a.kind}</p><p className="mt-1 text-sm text-muted-foreground">{new Date(a.occurred_at).toLocaleString('id-ID',{timeZone:'Asia/Jakarta'})}</p><p className="mt-2 break-words">{a.note||'—'}</p></article>)}</Section></>}
+ <LeadChanges leadId={id}/>
+ </AppShell>;
 }
