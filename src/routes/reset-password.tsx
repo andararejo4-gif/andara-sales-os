@@ -1,0 +1,12 @@
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { useEffect,useState,type FormEvent } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+export const Route=createFileRoute('/reset-password')({head:()=>({meta:[{title:'Pulihkan Kata Sandi — Andara Sales OS'},{name:'description',content:'Ganti kata sandi akun Andara melalui tautan pemulihan.'},{property:'og:title',content:'Pulihkan Kata Sandi — Andara Sales OS'},{property:'og:description',content:'Pemulihan akun internal Andara.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary'}]}),component:ResetPassword});
+function ResetPassword(){
+ const [valid,setValid]=useState(false),[password,setPassword]=useState(''),[confirm,setConfirm]=useState(''),[busy,setBusy]=useState(false),[message,setMessage]=useState(''),[done,setDone]=useState(false);
+ useEffect(()=>{if(new URLSearchParams(window.location.hash.slice(1)).get('type')==='recovery')setValid(true);},[]);
+ async function submit(e:FormEvent){e.preventDefault();if(password!==confirm){setMessage('Kata sandi tidak sama.');return;}setBusy(true);const {error}=await supabase.auth.updateUser({password});setBusy(false);if(error){setMessage('Kata sandi belum tersimpan. Periksa tautan dan coba lagi.');return;}await supabase.auth.signOut();setDone(true);}
+ return <main className="mx-auto max-w-md px-6 py-16"><h1 className="text-[28px] font-bold">Kata sandi baru</h1>{done?<p className="mt-5 text-success">Kata sandi berhasil diganti.</p>:valid?<form onSubmit={submit} className="mt-8 space-y-5"><label className="block">Kata sandi baru<Input type="password" autoComplete="new-password" minLength={8} required className="mt-2 h-12" value={password} onChange={e=>setPassword(e.target.value)}/></label><label className="block">Ulangi kata sandi<Input type="password" autoComplete="new-password" minLength={8} required className="mt-2 h-12" value={confirm} onChange={e=>setConfirm(e.target.value)}/></label>{message&&<p role="alert" className="text-destructive">{message}</p>}<Button className="h-12 w-full" disabled={busy}>Simpan kata sandi</Button></form>:<p className="mt-5 text-muted-foreground">Buka tautan pemulihan dari email Anda. Jika sudah kedaluwarsa, minta tautan baru.</p>}<Button variant="link" asChild className="mt-5 h-11"><Link to="/auth">Kembali ke login</Link></Button></main>;
+}
