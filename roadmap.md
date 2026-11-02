@@ -1,4 +1,5 @@
 # Role-based login
+- [ ] Add PDF/Excel/CSV daily reports for SE personal, TL supervised SE, SM coordinated TL/SE, preserving scoped ADM access; verify exports and hierarchy restrictions.
 - [x] Apply uploaded master update: live lead creation/update, ADM/TL value verification, SM-approved IT lead edits, commissions/KPI storage and analytics links.
 - [x] Verify SM lead create/update/reload on desktop and mobile, 28 permission/routing tests; remove test records afterward.
 - [ ] Verify ADM/TL value verification through assigned accounts (requires ADM/TL staff accounts).

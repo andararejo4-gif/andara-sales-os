@@ -4,7 +4,7 @@ import {revenueSummary,leadAttribution,publicationAttribution,reminderKind,csvCe
 const se={user_id:'se',staff_code:'004',staff_name:'Angga',tl_id:'tl',role:'se'},tl={user_id:'tl',staff_code:'',staff_name:'Dian',tl_id:null,role:'tl'};
 describe('Revision MD rules',()=>{
  it('only TL and SM create projects',()=>{for(const role of roles)expect(canCreateProject(role)).toBe(['tl','sm'].includes(role));});
- it('only TL and ADM export daily reports',()=>{for(const role of roles)expect(canExportDaily(role)).toBe(['tl','adm'].includes(role));});
+ it('SE, TL, SM and existing ADM access can export daily reports',()=>{for(const role of roles)expect(canExportDaily(role)).toBe(['se','tl','sm','adm'].includes(role));});
  it('IT can access all 27 screens',()=>{for(let i=1;i<=27;i++)expect(screenAccess('it',i)).toBe('full');});
  it('SM revenue uses valid CV transactions and actual / target format',()=>expect(revenueSummary([{amount:620000000,status:'CV'},{amount:200000000,status:'BOOK'}],1000000000)).toEqual({actual:620000000,target:1000000000,percent:62,label:'620 jt / 1 M'}));
  it('TL lead hierarchy includes assigned SE',()=>expect(leadAttribution('Pak Joko',se,tl,'tl')).toBe('Pak Joko — TL Dian (SE 004 Angga)'));

@@ -18,3 +18,4 @@
 - IT maintenance exposes authorized application records and audit logs only, never service credentials or arbitrary SQL execution.
 - Lead mutations use authenticated transactional database RPCs with scoped authorization; IT submits immutable change requests approved by a scoped SM and applies each once to prevent approval bypass.
 - Operational lead screens, commission summaries, KPI records and social analytics links read persisted scoped records; account roles stay separate from user-editable biodata to prevent privilege escalation.
+- Daily exports use authenticated security-invoker report RPCs: a protected staff hierarchy narrows owners before existing source-table RLS; browser-only PDF/Excel generation produces files before the download click to preserve mobile user activation.

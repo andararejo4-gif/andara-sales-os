@@ -53,4 +53,4 @@ export const workspaceMetrics: Record<Workspace,string[]> = {
 };
 export function workspaceAllowed(role: AppRole, key: Workspace, write = false) { return role==='it'||(write ? workspaces[key].writers : workspaces[key].roles).some(r => r === role); }
 export function canCreateProject(role:AppRole){return role==='tl'||role==='sm';}
-export function canExportDaily(role:AppRole){return role==='tl'||role==='adm';}
+export function canExportDaily(role:AppRole){return role==='se'||role==='tl'||role==='sm'||role==='adm';}

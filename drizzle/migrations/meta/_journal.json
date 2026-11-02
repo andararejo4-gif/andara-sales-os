@@ -43,6 +43,13 @@
       "when": 1793628811227,
       "tag": "0005_maintenance_scope_and_commission_privacy",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1793630452206,
+      "tag": "0006_scoped_daily_report_functions",
+      "breakpoints": true
     }
   ]
 }

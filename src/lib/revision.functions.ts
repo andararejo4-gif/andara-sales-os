@@ -3,6 +3,7 @@ import {requireSupabaseAuth} from '@/integrations/supabase/auth-middleware';
 import {z} from 'zod';
 import {canCreateProject,canExportDaily,isRole} from '@/lib/roles';
 import {csvCell,revenueSummary} from '@/lib/revision';
+import {dailyReportSchema,reportCsv,reportInput} from '@/lib/daily-report';
 
 export const getRevision=createServerFn({method:'GET'}).middleware([requireSupabaseAuth]).handler(async({context})=>{
  const db=context.supabase;
@@ -29,9 +30,7 @@ export const updateEvent=createServerFn({method:'POST'}).middleware([requireSupa
 export const markReminder=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(z.object({id:z.string().uuid()})).handler(async({data,context})=>{const {error}=await context.supabase.from('event_reminders').update({read_at:new Date().toISOString()}).eq('id',data.id).eq('recipient_id',context.userId);if(error)throw new Error('Pengingat belum diperbarui.');return{ok:true};});
 export const exportDaily=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(z.object({day:z.string().regex(/^\d{4}-\d{2}-\d{2}$/),seId:z.string().uuid().optional()})).handler(async({data,context})=>{
  const {data:account}=await context.supabase.from('user_roles').select('role').eq('user_id',context.userId).single();if(!account||!isRole(account.role)||!canExportDaily(account.role))throw new Error('Hanya TL dan ADM dapat mengunduh laporan.');
- const {data:staff,error:staffError}=await context.supabase.rpc('staff_directory');if(staffError)throw new Error('Penanggung jawab gagal dimuat.');
- const sales=(staff??[]).filter(s=>s.role==='se'&&(!data.seId||s.user_id===data.seId));if(data.seId&&!sales.length)throw new Error('Sales di luar lingkup akses.');
- const start=new Date(`${data.day}T00:00:00+07:00`);if(Number.isNaN(start.getTime()))throw new Error('Tanggal tidak valid.');
- const {data:rows,error}=await context.supabase.from('sales_activities').select('*').in('owner_id',sales.map(s=>s.user_id)).gte('occurred_at',start.toISOString()).lt('occurred_at',new Date(start.getTime()+86400000).toISOString()).order('occurred_at');if(error)throw new Error('Laporan gagal dimuat.');
- const lines=[['Tanggal','SE ID','Nama SE','Aktivitas','Catatan'],...(rows??[]).map(r=>{const se=sales.find(s=>s.user_id===r.owner_id);return [r.occurred_at,se?.staff_code,se?.staff_name,r.kind,r.note];})];return{csv:'\uFEFF'+lines.map(row=>row.map(csvCell).join(',')).join('\r\n'),count:rows?.length??0};
+  reportInput.parse({day:data.day});
+  const {data:payload,error}=await context.supabase.rpc('daily_report_data',{_day:data.day,...(data.seId?{_owners:[data.seId]}:{})});if(error)throw new Error('Laporan gagal dimuat atau di luar lingkup akses.');
+  const report=dailyReportSchema.parse(payload);return{csv:reportCsv(report),count:report.activities.length+report.leads.length+report.kpis.length};
 });
