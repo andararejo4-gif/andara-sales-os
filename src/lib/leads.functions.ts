@@ -5,7 +5,8 @@ import {leadInput,leadFields,analyticsInput,canManageAnalytics} from '@/lib/lead
 import {isRole} from '@/lib/roles';
 
 export const saveLead=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(leadInput).handler(async({data,context})=>{
- const {data:id,error}=await context.supabase.rpc('save_sales_lead',{_id:data.id??null,_name:data.prospect_name,_phone:data.phone,_address:data.address,_source:data.source,_status:data.status,_note:data.note});
+ const fields={_name:data.prospect_name,_phone:data.phone,_address:data.address,_source:data.source,_status:data.status,_note:data.note};
+ const {data:id,error}=data.id?await context.supabase.rpc('save_sales_lead',{...fields,_id:data.id}):await context.supabase.rpc('create_sales_lead',fields);
  if(error||!id)throw new Error('Lead belum tersimpan. Periksa isian dan hak akses Anda.');
  return{id};
 });
