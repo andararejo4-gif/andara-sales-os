@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
@@ -19,7 +20,13 @@ import { Route as AuthenticatedTindakLanjutRouteImport } from './routes/_authent
 import { Route as AuthenticatedAktivitasBaruRouteImport } from './routes/_authenticated/aktivitas.baru'
 import { Route as AuthenticatedLeadIndexRouteImport } from './routes/_authenticated/lead.index'
 import { Route as AuthenticatedLeadIdRouteImport } from './routes/_authenticated/lead.$id'
+import { Route as AuthenticatedRuangFeatureRouteImport } from './routes/_authenticated/ruang.$feature'
 
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
@@ -71,9 +78,15 @@ const AuthenticatedLeadIdRoute = AuthenticatedLeadIdRouteImport.update({
   path: '/lead/$id',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedRuangFeatureRoute =
+  AuthenticatedRuangFeatureRouteImport.update({
+    id: '/ruang/$feature',
+    path: '/ruang/$feature',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
-  '/': typeof AuthenticatedRouteRouteWithChildren
+  '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -82,10 +95,11 @@ export interface FileRoutesByFullPath {
   '/tindak-lanjut': typeof AuthenticatedTindakLanjutRoute
   '/aktivitas/baru': typeof AuthenticatedAktivitasBaruRoute
   '/lead/$id': typeof AuthenticatedLeadIdRoute
+  '/ruang/$feature': typeof AuthenticatedRuangFeatureRoute
   '/lead/': typeof AuthenticatedLeadIndexRoute
 }
 export interface FileRoutesByTo {
-  '/': typeof AuthenticatedRouteRouteWithChildren
+  '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
@@ -94,10 +108,12 @@ export interface FileRoutesByTo {
   '/tindak-lanjut': typeof AuthenticatedTindakLanjutRoute
   '/aktivitas/baru': typeof AuthenticatedAktivitasBaruRoute
   '/lead/$id': typeof AuthenticatedLeadIdRoute
+  '/ruang/$feature': typeof AuthenticatedRuangFeatureRoute
   '/lead': typeof AuthenticatedLeadIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
+  '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -107,6 +123,7 @@ export interface FileRoutesById {
   '/_authenticated/tindak-lanjut': typeof AuthenticatedTindakLanjutRoute
   '/_authenticated/aktivitas/baru': typeof AuthenticatedAktivitasBaruRoute
   '/_authenticated/lead/$id': typeof AuthenticatedLeadIdRoute
+  '/_authenticated/ruang/$feature': typeof AuthenticatedRuangFeatureRoute
   '/_authenticated/lead/': typeof AuthenticatedLeadIndexRoute
 }
 export interface FileRouteTypes {
@@ -121,6 +138,7 @@ export interface FileRouteTypes {
     | '/tindak-lanjut'
     | '/aktivitas/baru'
     | '/lead/$id'
+    | '/ruang/$feature'
     | '/lead/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -133,9 +151,11 @@ export interface FileRouteTypes {
     | '/tindak-lanjut'
     | '/aktivitas/baru'
     | '/lead/$id'
+    | '/ruang/$feature'
     | '/lead'
   id:
     | '__root__'
+    | '/'
     | '/_authenticated'
     | '/auth'
     | '/reset-password'
@@ -145,10 +165,12 @@ export interface FileRouteTypes {
     | '/_authenticated/tindak-lanjut'
     | '/_authenticated/aktivitas/baru'
     | '/_authenticated/lead/$id'
+    | '/_authenticated/ruang/$feature'
     | '/_authenticated/lead/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
+  IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -156,6 +178,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated': {
       id: '/_authenticated'
       path: ''
@@ -226,6 +255,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedLeadIdRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/ruang/$feature': {
+      id: '/_authenticated/ruang/$feature'
+      path: '/ruang/$feature'
+      fullPath: '/ruang/$feature'
+      preLoaderRoute: typeof AuthenticatedRuangFeatureRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
@@ -236,6 +272,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedTindakLanjutRoute: typeof AuthenticatedTindakLanjutRoute
   AuthenticatedAktivitasBaruRoute: typeof AuthenticatedAktivitasBaruRoute
   AuthenticatedLeadIdRoute: typeof AuthenticatedLeadIdRoute
+  AuthenticatedRuangFeatureRoute: typeof AuthenticatedRuangFeatureRoute
   AuthenticatedLeadIndexRoute: typeof AuthenticatedLeadIndexRoute
 }
 
@@ -246,6 +283,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedTindakLanjutRoute: AuthenticatedTindakLanjutRoute,
   AuthenticatedAktivitasBaruRoute: AuthenticatedAktivitasBaruRoute,
   AuthenticatedLeadIdRoute: AuthenticatedLeadIdRoute,
+  AuthenticatedRuangFeatureRoute: AuthenticatedRuangFeatureRoute,
   AuthenticatedLeadIndexRoute: AuthenticatedLeadIndexRoute,
 }
 
@@ -253,6 +291,7 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
+  IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ResetPasswordRoute: ResetPasswordRoute,

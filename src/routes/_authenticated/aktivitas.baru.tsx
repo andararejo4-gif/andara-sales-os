@@ -4,6 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { AppShell } from "@/components/AppShell";
 import { leads } from "@/lib/data";
+import { Button } from '@/components/ui/button';
 
 export const Route = createFileRoute("/_authenticated/aktivitas/baru")({
   beforeLoad: ({ context }) => { if (!context.account.role || screenAccess(context.account.role, 7) === "none") throw redirect({ to: "/dashboard", replace: true }); },
@@ -26,7 +27,7 @@ function Chips({ label, options, value, onChange }: { label: string; options: st
       <p className="mb-2.5 text-[13px] font-semibold text-muted-foreground">{label}</p>
       <div className="flex flex-wrap gap-2">
         {options.map((o) => (
-          <button key={o} type="button" onClick={() => onChange(o)} className={`h-11 rounded-xl border px-4 font-medium transition-colors ${value === o ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card hover:bg-muted"}`}>{o}</button>
+          <Button key={o} type="button" variant={value===o?'default':'outline'} onClick={() => onChange(o)} className="h-11 rounded-xl px-4">{o}</Button>
         ))}
       </div>
     </div>
@@ -35,6 +36,8 @@ function Chips({ label, options, value, onChange }: { label: string; options: st
 
 function Form() {
   const nav = useNavigate();
+  const {account}=Route.useRouteContext();
+  const writable=account.role&&screenAccess(account.role,7)==='full';
   const [jenis, setJenis] = useState("");
   const [lead, setLead] = useState("");
   const [hasil, setHasil] = useState("");
@@ -47,13 +50,14 @@ function Form() {
         <Chips label="2 · Dengan siapa" options={[...leads.slice(0, 4).map((l) => l.panggilan), "Orang baru"]} value={lead} onChange={setLead} />
         <Chips label="3 · Hasil (status)" options={["NA · Tidak ditemui", "NO · Menolak", "ENG · Bermakna", "LEAD · Izin lanjut", "HOT · Setuju tur"]} value={hasil} onChange={setHasil} />
         <Chips label="4 · Tindak lanjut" options={["Besok", "3 hari", "1 minggu", "Nurture", "Tidak perlu"]} value={lanjut} onChange={setLanjut} />
-        <button
-          disabled={!ok}
-          onClick={() => { toast.success("Aktivitas tersimpan"); nav({ to: "/dashboard" }); }}
+        <Button
+          disabled={!ok||!writable}
+          onClick={() => { toast.info("Pratinjau aktivitas selesai; penyimpanan aktivitas nyata belum terhubung."); nav({ to: "/dashboard" }); }}
           className="h-12 w-full rounded-xl bg-primary text-base font-semibold text-primary-foreground shadow-fab transition-opacity disabled:opacity-40 disabled:shadow-none"
         >
           5 · Simpan
-        </button>
+        </Button>
+        {!writable&&<p className="mt-3 text-[13px] text-muted-foreground">Hanya lihat · pencatatan aktivitas oleh Sales Executive atau Team Leader.</p>}
         <p className="mt-3 text-center text-[13px] text-muted-foreground">Status HOT wajib punya tanggal tur dekat.</p>
       </div>
     </AppShell>

@@ -16,7 +16,7 @@ export function Login() {
   try {
    if(forgot){const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/reset-password'});if(error)throw error;setSent(true);}
    else {const {error}=await supabase.auth.signInWithPassword({email,password});if(error)throw error;await navigate({to:'/dashboard',replace:true});}
-  }catch{setError(forgot?'De herstelmail kon niet worden verstuurd. Probeer opnieuw.':'Email atau kata sandi tidak sesuai, atau akun belum dikonfirmasi.');}finally{setBusy(false);}
+  }catch{setError(forgot?'Email pemulihan belum terkirim. Silakan coba lagi.':'Email atau kata sandi tidak sesuai, atau akun belum dikonfirmasi.');}finally{setBusy(false);}
  }
  async function oauth(provider:'google'|'lovable'){
   setBusy(true);setError('');try{const result=await lovable.auth.signInWithOAuth(provider,{redirect_uri:window.location.origin+'/auth'});if(result.error)throw result.error;if(!result.redirected)await navigate({to:'/dashboard',replace:true});}catch{setError('Login belum berhasil. Silakan coba lagi.');}finally{setBusy(false);}

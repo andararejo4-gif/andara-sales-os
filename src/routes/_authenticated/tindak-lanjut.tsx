@@ -4,6 +4,7 @@ import { Check, MessageCircle, Phone, Sparkles } from "lucide-react";
 import { useState } from "react";
 import { AppShell } from "@/components/AppShell";
 import { samarkan, findLead, tindakLanjut, tingkatLewat } from "@/lib/data";
+import { Button } from '@/components/ui/button';
 
 export const Route = createFileRoute("/_authenticated/tindak-lanjut")({
   beforeLoad: ({ context }) => { if (!context.account.role || screenAccess(context.account.role, 9) === "none") throw redirect({ to: "/dashboard", replace: true }); },
@@ -21,6 +22,8 @@ export const Route = createFileRoute("/_authenticated/tindak-lanjut")({
 });
 
 function Queue() {
+  const {account}=Route.useRouteContext();
+  const writable=account.role&&screenAccess(account.role,9)==='full';
   const [done, setDone] = useState<string[]>([]);
   const list = tindakLanjut.filter((t) => !done.includes(t.leadId));
   return (
@@ -54,9 +57,9 @@ function Queue() {
                 <a href="#" className="flex h-11 items-center justify-center gap-2 rounded-xl bg-primary font-semibold text-primary-foreground">
                   {t.jenis === "Chat" ? <MessageCircle className="size-4" /> : <Phone className="size-4" />} {t.jenis === "Chat" ? "Kirim Chat" : "Call"}
                 </a>
-                <button onClick={() => setDone([...done, t.leadId])} aria-label="Tandai selesai" className="grid size-11 place-items-center rounded-xl border border-border text-success hover:bg-success/10">
+                <Button variant="outline" disabled={!writable} onClick={() => setDone([...done, t.leadId])} aria-label="Tandai selesai" className="grid size-11 place-items-center rounded-xl border border-border text-success hover:bg-success/10">
                   <Check className="size-5" />
-                </button>
+                </Button>
               </div>
             </article>
           );

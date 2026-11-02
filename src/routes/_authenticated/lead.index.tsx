@@ -20,6 +20,8 @@ export const Route = createFileRoute("/_authenticated/lead/")({
 });
 
 function LeadList() {
+  const {account}=Route.useRouteContext();
+  const canDetail=account.role&&screenAccess(account.role,3)!=='none';
   return (
     <AppShell title="Lead & Pipeline" subtitle={`${leads.length} calon pembeli · Klaten`}>
       <div className="mb-7 grid gap-3 sm:grid-cols-2">
@@ -33,15 +35,15 @@ function LeadList() {
       </div>
       <div className="surface divide-y divide-border">
         {[...leads].sort((a, b) => b.skor - a.skor).map((l) => (
-          <Link key={l.id} to="/lead/$id" params={{ id: l.id }} className="flex items-center gap-3 p-4 hover:bg-muted/50">
+          <div key={l.id} className="flex items-center gap-3 p-4 hover:bg-muted/50">
             <ScoreBadge skor={l.skor} />
             <div className="min-w-0 flex-1">
-              <p className="font-semibold">{l.panggilan}</p>
+              <p className="font-semibold">{canDetail?<Link to="/lead/$id" params={{id:l.id}}>{l.panggilan}</Link>:l.panggilan}</p>
               <p className="truncate text-[13px] text-muted-foreground">{l.proyek} · {l.sumber}</p>
             </div>
             <StatusBadge status={l.status} />
             <ArrowRight className="hidden size-4 text-muted-foreground sm:block" />
-          </Link>
+          </div>
         ))}
       </div>
       <p className="mt-4 text-[13px] text-muted-foreground">Privasi: hanya nama panggilan pada tahap prospek; nomor selalu tersamar.</p>
