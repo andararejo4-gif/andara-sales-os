@@ -7,9 +7,12 @@ import { accountOptions } from '@/lib/account';
 import { primaryWorkspace,roleLabels } from '@/lib/roles';
 import { Workspace,workOptions } from '@/components/Workspace';
 import { SignOut } from '@/components/SignOut';
+import { RevisionDashboard } from '@/components/RevisionDashboard';
+import { revisionOptions } from '@/lib/revision-query';
+import { Button } from '@/components/ui/button';
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  loader:({context})=>{const role=context.account.role;if(role&&role!=='se')return context.queryClient.ensureQueryData(workOptions(primaryWorkspace[role]));return null;},
+  loader:async({context})=>{const role=context.account.role;if(!role)return null;await context.queryClient.ensureQueryData(revisionOptions);if(role!=='se')return context.queryClient.ensureQueryData(workOptions(primaryWorkspace[role]));return null;},
   head: () => ({
     meta: [
       { title: "Beranda — Andara Sales OS" },
@@ -48,6 +51,7 @@ function Dashboard() {
   return (
     <AppShell title="Beranda Saya" subtitle={`${roleLabels[account.role]} · ${account.email}`}>
       <p className="mb-5 text-[13px] text-warning">Data contoh · belum terhubung ke aktivitas dan transaksi nyata.</p>
+      <RevisionDashboard/>
       <div className="md:grid md:grid-cols-[340px_1fr] md:gap-8">
         <div className="mb-7 rounded-3xl bg-ink p-6 text-ink-foreground">
           <div className="relative mx-auto grid size-36 place-items-center">
@@ -68,10 +72,10 @@ function Dashboard() {
           <Section title="Aktivitas hari ini">
             <div className="grid grid-cols-3 gap-2.5">
               {kartuAktivitas.map((k) => (
-                <div key={k.label} className="surface p-3.5">
+                <Button asChild variant="outline" key={k.label} className="h-auto flex-col items-start p-3.5"><Link to="/data/$kind" params={{kind:k.label==='Lead'||k.label==='Hot'?'leads':'activities'}}>
                   <p className="text-[13px] text-muted-foreground">{k.label}</p>
                   <p className={`mt-1 text-xl font-bold ${tone(k.nilai, k.target)}`}>{k.nilai}<span className="text-[13px] font-medium text-muted-foreground">/{k.target}</span></p>
-                </div>
+                </Link></Button>
               ))}
             </div>
           </Section>
