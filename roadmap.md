@@ -1,4 +1,6 @@
 # Role-based login
+- [ ] Apply uploaded master update: live lead creation/update, ADM/TL value verification, SM-approved IT lead edits, commissions/KPI storage and analytics links.
+- [ ] Verify new lead save/update/read flows and permission rules.
 - [x] Apply revision MD: live revenue, interactive metrics, content attribution and lead hierarchy.
 - [x] Add protected ADM/TL assignments, IT maintenance read/audit access, project creation and daily report downloads.
 - [x] Add calendar agendas and scheduled H-1/day-of in-app reminders.
