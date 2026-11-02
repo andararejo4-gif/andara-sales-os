@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as KomisiRouteImport } from './routes/komisi'
 import { Route as RuteRouteImport } from './routes/rute'
 import { Route as TindakLanjutRouteImport } from './routes/tindak-lanjut'
 import { Route as AktivitasBaruRouteImport } from './routes/aktivitas.baru'
@@ -19,6 +20,11 @@ import { Route as LeadIdRouteImport } from './routes/lead.$id'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KomisiRoute = KomisiRouteImport.update({
+  id: '/komisi',
+  path: '/komisi',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RuteRoute = RuteRouteImport.update({
@@ -49,6 +55,7 @@ const LeadIdRoute = LeadIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/komisi': typeof KomisiRoute
   '/rute': typeof RuteRoute
   '/tindak-lanjut': typeof TindakLanjutRoute
   '/aktivitas/baru': typeof AktivitasBaruRoute
@@ -57,6 +64,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/komisi': typeof KomisiRoute
   '/rute': typeof RuteRoute
   '/tindak-lanjut': typeof TindakLanjutRoute
   '/aktivitas/baru': typeof AktivitasBaruRoute
@@ -66,6 +74,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/komisi': typeof KomisiRoute
   '/rute': typeof RuteRoute
   '/tindak-lanjut': typeof TindakLanjutRoute
   '/aktivitas/baru': typeof AktivitasBaruRoute
@@ -76,6 +85,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/komisi'
     | '/rute'
     | '/tindak-lanjut'
     | '/aktivitas/baru'
@@ -83,10 +93,17 @@ export interface FileRouteTypes {
     | '/lead/'
   fileRoutesByTo: FileRoutesByTo
   to:
-    '/' | '/rute' | '/tindak-lanjut' | '/aktivitas/baru' | '/lead/$id' | '/lead'
+    | '/'
+    | '/komisi'
+    | '/rute'
+    | '/tindak-lanjut'
+    | '/aktivitas/baru'
+    | '/lead/$id'
+    | '/lead'
   id:
     | '__root__'
     | '/'
+    | '/komisi'
     | '/rute'
     | '/tindak-lanjut'
     | '/aktivitas/baru'
@@ -96,6 +113,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  KomisiRoute: typeof KomisiRoute
   RuteRoute: typeof RuteRoute
   TindakLanjutRoute: typeof TindakLanjutRoute
   AktivitasBaruRoute: typeof AktivitasBaruRoute
@@ -110,6 +128,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/komisi': {
+      id: '/komisi'
+      path: '/komisi'
+      fullPath: '/komisi'
+      preLoaderRoute: typeof KomisiRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/rute': {
@@ -152,6 +177,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  KomisiRoute: KomisiRoute,
   RuteRoute: RuteRoute,
   TindakLanjutRoute: TindakLanjutRoute,
   AktivitasBaruRoute: AktivitasBaruRoute,

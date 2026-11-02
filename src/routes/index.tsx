@@ -1,78 +1,103 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, CalendarCheck, MessageCircle, Phone, TrendingUp } from "lucide-react";
-import { AppShell, ScoreBadge, Section } from "@/components/AppShell";
-import { findLead, leads, tindakLanjut, tingkatLewat } from "@/lib/data";
+import { ArrowRight, Plus, Sparkles, Wallet } from "lucide-react";
+import { AppShell, Section } from "@/components/AppShell";
+import { kartuAktivitas, omzet, skorHarian, tierInfo, tugasAI } from "@/lib/data";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Beranda — Andara Sales OS" },
-      { name: "description", content: "Prioritas hari ini, tindak lanjut, dan target penjualan Anda." },
+      { name: "description", content: "Skor harian, aktivitas, omzet, dan tugas AI untuk Sales Executive." },
       { property: "og:title", content: "Beranda — Andara Sales OS" },
-      { property: "og:description", content: "Prioritas hari ini, tindak lanjut, dan target penjualan Anda." },
+      { property: "og:description", content: "Skor harian, aktivitas, omzet, dan tugas AI untuk Sales Executive." },
     ],
   }),
   component: Dashboard,
 });
 
-function Dashboard() {
-  const prioritas = [...leads].filter((l) => l.tahap !== "Booking").sort((a, b) => b.skor - a.skor).slice(0, 3);
+function Ring({ value }: { value: number }) {
+  const r = 52, c = 2 * Math.PI * r, pct = Math.min(value / 115, 1);
   return (
-    <AppShell title="Selamat pagi, Wahyu" subtitle="Senin, 2 November 2026">
-      <div className="mb-7 overflow-hidden rounded-3xl bg-ink p-6 text-ink-foreground md:p-8">
-        <p className="text-[13px] opacity-70">Target November</p>
-        <div className="mt-1 flex items-end justify-between gap-4">
-          <p className="text-[28px] font-bold leading-none">3 <span className="text-base font-medium opacity-60">/ 5 unit</span></p>
-          <span className="flex items-center gap-1 text-[13px] text-positive"><TrendingUp className="size-4" /> +1 minggu ini</span>
+    <svg viewBox="0 0 120 120" className="size-36 -rotate-90">
+      <circle cx="60" cy="60" r={r} fill="none" strokeWidth="12" className="stroke-ink-foreground/15" />
+      <circle cx="60" cy="60" r={r} fill="none" strokeWidth="12" strokeLinecap="round" strokeDasharray={c} strokeDashoffset={c * (1 - pct)} className="stroke-positive" />
+    </svg>
+  );
+}
+
+function tone(n: number, t: number) {
+  const p = n / t;
+  return p >= 1 ? "text-positive" : p >= 0.7 ? "text-info" : "text-alert";
+}
+
+function Dashboard() {
+  const tier = tierInfo[skorHarian.tier - 1] ?? tierInfo[0]!;
+  const pct = Math.round((omzet.capai / omzet.target) * 100);
+  return (
+    <AppShell title="Halo, Wahyu" subtitle="Sales Executive · Klaten · Green Gumulan">
+      <div className="md:grid md:grid-cols-[340px_1fr] md:gap-8">
+        <div className="mb-7 rounded-3xl bg-ink p-6 text-ink-foreground">
+          <div className="relative mx-auto grid size-36 place-items-center">
+            <Ring value={skorHarian.skor} />
+            <div className="absolute text-center">
+              <p className="text-[28px] font-bold leading-none">{skorHarian.skor}</p>
+              <p className="mt-1 text-[13px] opacity-60">Skor harian</p>
+            </div>
+          </div>
+          <p className="mt-4 text-center font-semibold">Peringkat {skorHarian.peringkat} dari {skorHarian.dari} · Tier {tier.tier} ({tier.nama})</p>
+          <div className="mt-5 flex gap-1">
+            {tierInfo.map((t) => <div key={t.tier} className={`h-1.5 flex-1 rounded-full ${t.tier <= tier.tier ? "bg-positive" : "bg-ink-foreground/15"}`} />)}
+          </div>
+          <p className="mt-2 text-center text-[13px] opacity-60">Tier 5 Elite mulai skor ≥ 115</p>
         </div>
-        <div className="mt-4 h-2 overflow-hidden rounded-full bg-ink-foreground/15">
-          <div className="h-full w-3/5 rounded-full bg-ink-foreground" />
+
+        <div>
+          <Section title="Aktivitas hari ini">
+            <div className="grid grid-cols-3 gap-2.5">
+              {kartuAktivitas.map((k) => (
+                <div key={k.label} className="surface p-3.5">
+                  <p className="text-[13px] text-muted-foreground">{k.label}</p>
+                  <p className={`mt-1 text-xl font-bold ${tone(k.nilai, k.target)}`}>{k.nilai}<span className="text-[13px] font-medium text-muted-foreground">/{k.target}</span></p>
+                </div>
+              ))}
+            </div>
+          </Section>
+
+          <Section title="Omzet bulan ini">
+            <div className="surface p-5">
+              <div className="flex items-baseline justify-between">
+                <p className="text-xl font-bold">Rp {omzet.capai} jt <span className="text-[15px] font-medium text-muted-foreground">/ Rp 1,0 M</span></p>
+                <span className="font-semibold text-positive">{pct}%</span>
+              </div>
+              <div className="mt-3 h-2.5 overflow-hidden rounded-full bg-muted">
+                <div className="h-full rounded-full bg-positive" style={{ width: `${pct}%` }} />
+              </div>
+              <p className="mt-3 text-[13px] font-medium text-destructive">Pace: {omzet.pace}</p>
+              <p className="mt-1 text-[13px] text-muted-foreground">Hanya closing valid (CV) yang dihitung ke target.</p>
+            </div>
+          </Section>
         </div>
-        <div className="mt-6 grid grid-cols-3 gap-3 border-t border-ink-foreground/10 pt-5 text-center">
-          {[["7", "Kontak kemarin"], ["2", "Kunjungan"], ["4", "Jatuh tempo"]].map(([n, l]) => (
-            <div key={l}><p className="text-xl font-bold">{n}</p><p className="text-[13px] opacity-60">{l}</p></div>
+      </div>
+
+      <Section title="Tugas AI Agent untukmu hari ini">
+        <div className="space-y-2">
+          {tugasAI.map((t, i) => (
+            <Link key={t.teks} to={t.to} className="flex items-center gap-3 rounded-xl border border-ai/25 bg-ai/5 p-4 transition-colors hover:bg-ai/10">
+              <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-ai/15 text-[13px] font-bold text-ai">{i + 1}</span>
+              <p className="flex-1 font-medium">{t.teks}</p>
+              <Sparkles className="size-4 text-ai" />
+            </Link>
           ))}
         </div>
+      </Section>
+
+      <div className="grid grid-cols-3 gap-2.5">
+        <Link to="/lead" className="flex h-14 items-center justify-center gap-1.5 rounded-xl bg-primary text-[15px] font-semibold text-primary-foreground"><Plus className="size-4" /> Lead</Link>
+        <Link to="/aktivitas/baru" className="flex h-14 items-center justify-center gap-1.5 rounded-xl bg-success text-[15px] font-semibold text-primary-foreground"><Plus className="size-4" /> Aktivitas</Link>
+        <Link to="/komisi" className="flex h-14 items-center justify-center gap-1.5 rounded-xl bg-warning text-[15px] font-semibold text-primary-foreground"><Wallet className="size-4" /> Komisi</Link>
       </div>
 
-      <div className="md:grid md:grid-cols-2 md:gap-8">
-        <Section title="Prioritas hari ini" action={<Link to="/lead" className="text-[13px] font-semibold text-primary">Semua</Link>}>
-          <div className="surface divide-y divide-border">
-            {prioritas.map((l) => (
-              <Link key={l.id} to="/lead/$id" params={{ id: l.id }} className="flex items-center gap-3 p-4 transition-colors hover:bg-muted/50">
-                <ScoreBadge skor={l.skor} />
-                <div className="min-w-0 flex-1">
-                  <p className="truncate font-semibold">{l.nama}</p>
-                  <p className="truncate text-[13px] text-muted-foreground">{l.langkah}</p>
-                </div>
-                <ArrowRight className="size-4 text-muted-foreground" />
-              </Link>
-            ))}
-          </div>
-        </Section>
-
-        <Section title="Tindak lanjut jatuh tempo" action={<Link to="/tindak-lanjut" className="text-[13px] font-semibold text-primary">Buka antrean</Link>}>
-          <div className="space-y-2.5">
-            {tindakLanjut.slice(0, 3).map((t) => {
-              const l = findLead(t.leadId)!;
-              const tone = tingkatLewat(t.lewat);
-              const Icon = t.jenis === "WhatsApp" ? MessageCircle : Phone;
-              return (
-                <div key={t.leadId} className="surface flex items-center gap-3 p-4">
-                  <div className={`grid size-10 place-items-center rounded-xl bg-${tone}/12 text-${tone}`}><Icon className="size-5" /></div>
-                  <div className="flex-1">
-                    <p className="font-semibold">{l.nama}</p>
-                    <p className={`text-[13px] text-${tone}`}>{t.lewat ? `Lewat ${t.lewat} hari` : "Hari ini"} · {t.jenis}</p>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </Section>
-      </div>
-
-      <Link to="/rute" className="surface flex items-center gap-4 p-5">
-        <div className="grid size-12 place-items-center rounded-2xl bg-accent text-accent-foreground"><CalendarCheck className="size-6" /></div>
+      <Link to="/rute" className="surface mt-7 flex items-center gap-4 p-5">
         <div className="flex-1"><p className="font-semibold">Rute canvassing hari ini</p><p className="text-[13px] text-muted-foreground">4 titik · 53 pintu · mulai 08.30</p></div>
         <ArrowRight className="size-5 text-muted-foreground" />
       </Link>

@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { MapPin, MessageCircle, Phone, Sparkles } from "lucide-react";
-import { AppShell, Section } from "@/components/AppShell";
-import { findLead, riwayat } from "@/lib/data";
+import { AppShell, Section, StatusBadge } from "@/components/AppShell";
+import { findLead, jalurPipeline, riwayat, samarkan, statusInfo } from "@/lib/data";
 
 export const Route = createFileRoute("/lead/$id")({
   loader: ({ params }) => {
@@ -11,35 +11,46 @@ export const Route = createFileRoute("/lead/$id")({
   },
   head: ({ loaderData }) => ({
     meta: [
-      { title: loaderData ? `${loaderData.lead.nama} — Andara Sales OS` : "Lead tidak ditemukan" },
-      { name: "description", content: "Riwayat, skor, dan langkah berikutnya untuk lead ini." },
+      { title: loaderData ? `${loaderData.lead.panggilan} — Andara Sales OS` : "Lead tidak ditemukan" },
+      { name: "description", content: "Status pipeline, skor, riwayat, dan langkah berikutnya." },
       { property: "og:title", content: "Rincian Lead — Andara Sales OS" },
-      { property: "og:description", content: "Riwayat, skor, dan langkah berikutnya untuk lead ini." },
+      { property: "og:description", content: "Status pipeline, skor, riwayat, dan langkah berikutnya." },
     ],
   }),
   notFoundComponent: () => <div className="p-10 text-center">Lead tidak ditemukan. <Link to="/lead" className="text-primary">Kembali</Link></div>,
   component: LeadDetail,
 });
 
-const tahapan = ["Baru", "Kontak", "Kunjungan", "Negosiasi", "Booking"];
-
 function LeadDetail() {
   const { lead } = Route.useLoaderData();
-  const idx = tahapan.indexOf(lead.tahap);
+  const idx = jalurPipeline.indexOf(lead.status);
   return (
-    <AppShell title={lead.nama} subtitle={`${lead.id} · ${lead.proyek}`}>
+    <AppShell title={lead.panggilan} subtitle={`${lead.id} · ${lead.proyek}`}>
       <div className="md:grid md:grid-cols-[1fr_320px] md:gap-8">
         <div>
           <div className="surface mb-7 p-5">
-            <div className="flex gap-1.5">
-              {tahapan.map((t, i) => <div key={t} className={`h-1.5 flex-1 rounded-full ${i <= idx ? "bg-primary" : "bg-muted"}`} />)}
+            <div className="flex items-center justify-between">
+              <StatusBadge status={lead.status} />
+              <span className="text-[13px] text-muted-foreground">Dihitung: {statusInfo[lead.status].dihitung}</span>
             </div>
-            <p className="mt-2 text-[13px] text-muted-foreground">Tahap: <b className="text-foreground">{lead.tahap}</b></p>
+            <div className="mt-4 grid grid-cols-6 gap-1">
+              {jalurPipeline.map((s, i) => (
+                <div key={s}>
+                  <div className={`h-1.5 rounded-full ${idx >= 0 && i <= idx ? "bg-primary" : "bg-muted"}`} />
+                  <p className={`mt-1.5 text-center text-[13px] ${s === lead.status ? "font-bold text-primary" : "text-muted-foreground"}`}>{s}</p>
+                </div>
+              ))}
+            </div>
+            {lead.sla && <p className="mt-3 rounded-lg bg-alert/10 px-3 py-2 text-[13px] font-medium text-alert">SLA: {lead.sla}</p>}
             <div className="mt-5 grid grid-cols-2 gap-2">
-              <a href={`tel:${lead.telp}`} className="flex h-11 items-center justify-center gap-2 rounded-xl bg-primary font-semibold text-primary-foreground"><Phone className="size-4" /> Telepon</a>
-              <a href="#" className="flex h-11 items-center justify-center gap-2 rounded-xl border border-border font-semibold"><MessageCircle className="size-4" /> WhatsApp</a>
+              <a href="#" className="flex h-11 items-center justify-center gap-2 rounded-xl bg-primary font-semibold text-primary-foreground"><Phone className="size-4" /> Call</a>
+              <a href="#" className="flex h-11 items-center justify-center gap-2 rounded-xl border border-border font-semibold"><MessageCircle className="size-4" /> Chat</a>
             </div>
-            <p className="mt-4 flex items-center gap-2 text-[13px] text-muted-foreground"><MapPin className="size-4" /> {lead.alamat}</p>
+            <div className="mt-4 flex flex-wrap gap-x-5 gap-y-1 text-[13px] text-muted-foreground">
+              <span className="flex items-center gap-1.5"><Phone className="size-3.5" /> {samarkan(lead.telp)}</span>
+              <span className="flex items-center gap-1.5"><MapPin className="size-3.5" /> {lead.area}</span>
+              <span>Sumber: {lead.sumber}</span>
+            </div>
           </div>
 
           <Section title="Langkah berikutnya">
@@ -62,7 +73,7 @@ function LeadDetail() {
         <Section title="Skor & alasannya">
           <div className="surface p-5">
             <p className="text-[28px] font-bold leading-none">{lead.skor}<span className="text-base text-muted-foreground">/100</span></p>
-            <p className="mt-3 flex items-center gap-1.5 text-[13px] font-semibold text-ai"><Sparkles className="size-3.5" /> Dinilai AI</p>
+            <p className="mt-3 flex items-center gap-1.5 text-[13px] font-semibold text-ai"><Sparkles className="size-3.5" /> Dinilai AI — periksa dulu</p>
             <ul className="mt-2 space-y-2">
               {lead.alasan.map((a) => <li key={a} className="flex gap-2"><span className="text-positive">✓</span>{a}</li>)}
             </ul>
