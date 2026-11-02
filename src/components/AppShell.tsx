@@ -42,7 +42,7 @@ export function AppShell({ title, subtitle, children, hideFab }: { title: string
             </Link>
           ))}
           {Object.entries(workspaces).filter(([key])=>role&&workspaceAllowed(role,key as keyof typeof workspaces)).map(([key,w])=><Link key={key} to="/ruang/$feature" params={{feature:key}} className={`flex min-h-11 items-center gap-3 rounded-xl px-3 font-medium ${pathname===`/ruang/${key}`?'bg-sidebar-accent text-sidebar-accent-foreground':'hover:bg-sidebar-accent/60'}`}><BriefcaseBusiness className="size-5 shrink-0"/>{w.title}</Link>)}
-          <Button asChild variant="ghost" className="h-11 justify-start"><Link to="/calendar"><CalendarDays/>Kalender</Link></Button>
+          <Button asChild variant="ghost" className="h-11 justify-start"><Link to="/calendar" search={{filter:'all'}}><CalendarDays/>Kalender</Link></Button>
           {role==='it'&&<Button asChild variant="ghost" className="h-11 justify-start"><Link to="/data/$kind" params={{kind:'audit'}}><ShieldCheck/>Log Audit</Link></Button>}
         </nav>
         {canActivity&&<Link to="/aktivitas/baru" className="flex h-11 items-center justify-center gap-2 rounded-xl bg-primary font-semibold text-primary-foreground">

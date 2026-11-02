@@ -9,7 +9,7 @@ export const getRevision=createServerFn({method:'GET'}).middleware([requireSupab
  const {data:role,error:roleError}=await db.from('user_roles').select('role,team_id,project_id').eq('user_id',context.userId).single();
  if(roleError||!role)throw new Error('Akses belum ditetapkan.');
  const results=await Promise.all([db.from('sales_projects').select('*').order('created_at',{ascending:false}),db.from('sales_leads').select('*').order('created_at',{ascending:false}),db.from('sales_transactions').select('*'),db.from('sales_activities').select('*').order('occurred_at',{ascending:false}),db.from('ai_videos').select('*').order('created_at',{ascending:false}),db.from('calendar_events').select('*').order('starts_at'),db.from('event_reminders').select('*').eq('recipient_id',context.userId).order('created_at',{ascending:false}),db.rpc('staff_directory'),db.from('audit_logs').select('*').order('created_at',{ascending:false}).limit(100)]);
- if(results.some(r=>r.error))throw new Error('Les données gagal dimuat. Coba lagi.');
+ if(results.some(r=>r.error))throw new Error('Data gagal dimuat. Coba lagi.');
  const [projects,leads,transactions,activities,videos,events,reminders,staff,audit]=results;
  const month=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit'}).format(new Date());
  return{projects:projects?.data??[],leads:leads?.data??[],transactions:transactions?.data??[],activities:activities?.data??[],videos:videos?.data??[],events:events?.data??[],reminders:reminders?.data??[],staff:staff?.data??[],audit:audit?.data??[],revenue:revenueSummary((transactions?.data??[]).filter(t=>t.closed_on.startsWith(month)),(projects?.data??[]).reduce((s,p)=>s+Number(p.target_amount),0))};
