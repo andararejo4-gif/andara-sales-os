@@ -2,8 +2,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, Plus, Sparkles, Wallet } from "lucide-react";
 import { AppShell, Section } from "@/components/AppShell";
 import { kartuAktivitas, omzet, skorHarian, tierInfo, tugasAI } from "@/lib/data";
+import { useSuspenseQuery } from '@tanstack/react-query';
+import { accountOptions } from '@/lib/account';
+import { primaryWorkspace,roleLabels } from '@/lib/roles';
+import { Workspace,workOptions } from '@/components/Workspace';
+import { SignOut } from '@/components/SignOut';
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
+  loader:({context})=>{const role=context.account.role;if(role&&role!=='se')return context.queryClient.ensureQueryData(workOptions(primaryWorkspace[role]));return null;},
   head: () => ({
     meta: [
       { title: "Beranda — Andara Sales OS" },
@@ -33,10 +39,15 @@ function tone(n: number, t: number) {
 }
 
 function Dashboard() {
-  const tier = tierInfo[skorHarian.tier - 1] ?? tierInfo[0]!;
+  const {data:account}=useSuspenseQuery(accountOptions);
+  if(!account.role)return <main className="mx-auto max-w-lg px-6 py-16"><h1 className="text-[28px] font-bold">Akses belum ditetapkan</h1><p className="mt-4 text-muted-foreground">Akun Anda sudah masuk. Hubungi penanggung jawab untuk penetapan jabatan, tim, dan proyek.</p><div className="mt-6"><SignOut/></div></main>;
+  if(account.role!=='se')return <Workspace feature={primaryWorkspace[account.role]}/>;
+  const tier = tierInfo[skorHarian.tier - 1] ?? tierInfo[0];
+  if(!tier)return null;
   const pct = Math.round((omzet.capai / omzet.target) * 100);
   return (
-    <AppShell title="Halo, Wahyu" subtitle="Sales Executive · Klaten · Green Gumulan">
+    <AppShell title="Beranda Saya" subtitle={`${roleLabels[account.role]} · ${account.email}`}>
+      <p className="mb-5 text-[13px] text-warning">Data contoh · belum terhubung ke aktivitas dan transaksi nyata.</p>
       <div className="md:grid md:grid-cols-[340px_1fr] md:gap-8">
         <div className="mb-7 rounded-3xl bg-ink p-6 text-ink-foreground">
           <div className="relative mx-auto grid size-36 place-items-center">
@@ -84,7 +95,7 @@ function Dashboard() {
       <Section title="Tugas AI Agent untukmu hari ini">
         <div className="space-y-2">
           {tugasAI.map((t, i) => (
-            <Link key={t.teks} to={t.to} className="flex items-center gap-3 rounded-xl border border-ai/25 bg-ai/5 p-4 transition-colors hover:bg-ai/10">
+            <Link key={t.teks} to={t.to==='/'?'/dashboard':t.to} className="flex items-center gap-3 rounded-xl border border-ai/25 bg-ai/5 p-4 transition-colors hover:bg-ai/10">
               <span className="grid size-8 shrink-0 place-items-center rounded-lg bg-ai/15 text-[13px] font-bold text-ai">{i + 1}</span>
               <p className="flex-1 font-medium">{t.teks}</p>
               <Sparkles className="size-4 text-ai" />

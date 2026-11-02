@@ -1,0 +1,3 @@
+import { createFileRoute } from '@tanstack/react-router';
+import { Login } from '@/components/Login';
+export const Route=createFileRoute('/')({head:()=>({meta:[{title:'Masuk — Andara Sales OS'},{name:'description',content:'Login internal Andara Rejo Makmur untuk enam peran kerja.'},{property:'og:title',content:'Masuk — Andara Sales OS'},{property:'og:description',content:'Masuk ke dashboard sesuai jabatan Anda.'},{property:'og:type',content:'website'},{name:'twitter:card',content:'summary'}]}),component:Login});
