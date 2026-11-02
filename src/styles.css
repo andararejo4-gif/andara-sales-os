@@ -209,3 +209,4 @@
 @utility pb-safe {
   padding-bottom: calc(env(safe-area-inset-bottom) + 0.5rem);
 }
+@source inline("bg-{warning,alert,destructive}/12 text-{warning,alert,destructive}");

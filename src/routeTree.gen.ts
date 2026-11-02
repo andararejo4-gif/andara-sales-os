@@ -10,33 +10,97 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as RuteRouteImport } from './routes/rute'
+import { Route as TindakLanjutRouteImport } from './routes/tindak-lanjut'
+import { Route as AktivitasBaruRouteImport } from './routes/aktivitas.baru'
+import { Route as LeadIndexRouteImport } from './routes/lead.index'
+import { Route as LeadIdRouteImport } from './routes/lead.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RuteRoute = RuteRouteImport.update({
+  id: '/rute',
+  path: '/rute',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TindakLanjutRoute = TindakLanjutRouteImport.update({
+  id: '/tindak-lanjut',
+  path: '/tindak-lanjut',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AktivitasBaruRoute = AktivitasBaruRouteImport.update({
+  id: '/aktivitas/baru',
+  path: '/aktivitas/baru',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LeadIndexRoute = LeadIndexRouteImport.update({
+  id: '/lead/',
+  path: '/lead/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LeadIdRoute = LeadIdRouteImport.update({
+  id: '/lead/$id',
+  path: '/lead/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/rute': typeof RuteRoute
+  '/tindak-lanjut': typeof TindakLanjutRoute
+  '/aktivitas/baru': typeof AktivitasBaruRoute
+  '/lead/$id': typeof LeadIdRoute
+  '/lead/': typeof LeadIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/rute': typeof RuteRoute
+  '/tindak-lanjut': typeof TindakLanjutRoute
+  '/aktivitas/baru': typeof AktivitasBaruRoute
+  '/lead/$id': typeof LeadIdRoute
+  '/lead': typeof LeadIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/rute': typeof RuteRoute
+  '/tindak-lanjut': typeof TindakLanjutRoute
+  '/aktivitas/baru': typeof AktivitasBaruRoute
+  '/lead/$id': typeof LeadIdRoute
+  '/lead/': typeof LeadIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/rute'
+    | '/tindak-lanjut'
+    | '/aktivitas/baru'
+    | '/lead/$id'
+    | '/lead/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    '/' | '/rute' | '/tindak-lanjut' | '/aktivitas/baru' | '/lead/$id' | '/lead'
+  id:
+    | '__root__'
+    | '/'
+    | '/rute'
+    | '/tindak-lanjut'
+    | '/aktivitas/baru'
+    | '/lead/$id'
+    | '/lead/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  RuteRoute: typeof RuteRoute
+  TindakLanjutRoute: typeof TindakLanjutRoute
+  AktivitasBaruRoute: typeof AktivitasBaruRoute
+  LeadIdRoute: typeof LeadIdRoute
+  LeadIndexRoute: typeof LeadIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +112,51 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/rute': {
+      id: '/rute'
+      path: '/rute'
+      fullPath: '/rute'
+      preLoaderRoute: typeof RuteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tindak-lanjut': {
+      id: '/tindak-lanjut'
+      path: '/tindak-lanjut'
+      fullPath: '/tindak-lanjut'
+      preLoaderRoute: typeof TindakLanjutRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/aktivitas/baru': {
+      id: '/aktivitas/baru'
+      path: '/aktivitas/baru'
+      fullPath: '/aktivitas/baru'
+      preLoaderRoute: typeof AktivitasBaruRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lead/': {
+      id: '/lead/'
+      path: '/lead'
+      fullPath: '/lead/'
+      preLoaderRoute: typeof LeadIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lead/$id': {
+      id: '/lead/$id'
+      path: '/lead/$id'
+      fullPath: '/lead/$id'
+      preLoaderRoute: typeof LeadIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  RuteRoute: RuteRoute,
+  TindakLanjutRoute: TindakLanjutRoute,
+  AktivitasBaruRoute: AktivitasBaruRoute,
+  LeadIdRoute: LeadIdRoute,
+  LeadIndexRoute: LeadIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
