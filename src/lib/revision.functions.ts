@@ -2,7 +2,7 @@ import {createServerFn} from '@tanstack/react-start';
 import {requireSupabaseAuth} from '@/integrations/supabase/auth-middleware';
 import {z} from 'zod';
 import {canCreateProject,canExportDaily,isRole} from '@/lib/roles';
-import {csvCell,revenueSummary} from '@/lib/revision';
+import {revenueSummary} from '@/lib/revision';
 import {dailyReportSchema,reportCsv,reportInput} from '@/lib/daily-report';
 
 export const getRevision=createServerFn({method:'GET'}).middleware([requireSupabaseAuth]).handler(async({context})=>{
@@ -29,7 +29,7 @@ export const createEvent=createServerFn({method:'POST'}).middleware([requireSupa
 export const updateEvent=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(z.object({id:z.string().uuid(),status:z.enum(['done','cancelled'])})).handler(async({data,context})=>{const {data:row,error}=await context.supabase.from('calendar_events').update({status:data.status}).eq('id',data.id).select('id').single();if(error||!row)throw new Error('Agenda belum diperbarui.');return{ok:true};});
 export const markReminder=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(z.object({id:z.string().uuid()})).handler(async({data,context})=>{const {error}=await context.supabase.from('event_reminders').update({read_at:new Date().toISOString()}).eq('id',data.id).eq('recipient_id',context.userId);if(error)throw new Error('Pengingat belum diperbarui.');return{ok:true};});
 export const exportDaily=createServerFn({method:'POST'}).middleware([requireSupabaseAuth]).inputValidator(z.object({day:z.string().regex(/^\d{4}-\d{2}-\d{2}$/),seId:z.string().uuid().optional()})).handler(async({data,context})=>{
- const {data:account}=await context.supabase.from('user_roles').select('role').eq('user_id',context.userId).single();if(!account||!isRole(account.role)||!canExportDaily(account.role))throw new Error('Hanya TL dan ADM dapat mengunduh laporan.');
+  const {data:account}=await context.supabase.from('user_roles').select('role').eq('user_id',context.userId).single();if(!account||!isRole(account.role)||!canExportDaily(account.role))throw new Error('Anda tidak memiliki akses laporan harian.');
   reportInput.parse({day:data.day});
   const {data:payload,error}=await context.supabase.rpc('daily_report_data',{_day:data.day,...(data.seId?{_owners:[data.seId]}:{})});if(error)throw new Error('Laporan gagal dimuat atau di luar lingkup akses.');
   const report=dailyReportSchema.parse(payload);return{csv:reportCsv(report),count:report.activities.length+report.leads.length+report.kpis.length};
