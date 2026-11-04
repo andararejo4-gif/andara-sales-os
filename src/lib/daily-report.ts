@@ -10,7 +10,12 @@ export const dailyReportSchema=z.object({
  kpis:z.array(z.object({id:z.string(),owner_id:z.string(),metric:z.string(),value:z.coerce.number(),logged_on:z.string()})),
 });
 export type DailyReport=z.infer<typeof dailyReportSchema>;
-export const reportInput=z.object({day:z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(day=>{const date=new Date(`${day}T00:00:00Z`);return !Number.isNaN(date.getTime())&&date.toISOString().slice(0,10)===day;},'Tanggal tidak valid.'),ownerIds:z.array(z.string().uuid()).min(1).max(1000).optional()});
+const dayText=z.string().regex(/^\d{4}-\d{2}-\d{2}$/).refine(day=>{const date=new Date(`${day}T00:00:00Z`);return !Number.isNaN(date.getTime())&&date.toISOString().slice(0,10)===day;},'Tanggal tidak valid.');
+export const reportInput=z.object({from:dayText,to:dayText,ownerIds:z.array(z.string().uuid()).min(1).max(1000).optional(),kelas:z.enum(["REGULER","BESAR"]).optional()}).refine(v=>v.to>=v.from&&(Date.parse(v.to)-Date.parse(v.from))/86400000<=366,'Rentang tanggal tidak valid.');
+export const reportPeriods={daily:'Harian',weekly:'Mingguan',monthly:'Bulanan'} as const;
+export type ReportPeriod=keyof typeof reportPeriods;
+export function reportEnd(period:ReportPeriod,from:string){const d=new Date(`${from}T00:00:00Z`);if(period==='weekly')d.setUTCDate(d.getUTCDate()+6);else if(period==='monthly')d.setUTCMonth(d.getUTCMonth()+1,0);return d.toISOString().slice(0,10);}
+export const manualNoteInput=z.object({note:z.string().trim().min(1).max(2000)});
 export function selectReportOwners(staff:ReportStaff[],selected:string[],teamIds:string[]){return staff.filter(s=>selected.includes(s.user_id)||teamIds.includes(s.user_id)||Boolean(s.tl_id&&teamIds.includes(s.tl_id))).map(s=>s.user_id);}
 export const reportHeaders=['Waktu (WIB)','Peran','ID Staf','Nama Staf','TL ID','Kategori','Aktivitas / Prospek','Status / Nilai','Catatan'];
 export function reportRows(report:DailyReport){

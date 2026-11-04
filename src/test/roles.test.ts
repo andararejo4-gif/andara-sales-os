@@ -1,7 +1,7 @@
 import { describe,it,expect } from 'vitest';
 import { roles,screenAccess,workspaceAllowed } from '@/lib/roles';
 describe('Document role permissions',()=>{
- it('supports six business roles and the requested IT maintenance role',()=>expect(roles).toEqual(['se','tl','adm','dm','sm','dir','it']));
+ it('supports six business roles and the requested IT maintenance role',()=>expect(roles).toEqual(['se','sales_2','tl','tl_2','adm','dm','sm','dir','it']));
  it('all six roles have their dashboard',()=>{for(const role of roles)expect(screenAccess(role,1)).toBe('full');});
  it('sales and leaders may record activities, managers only read',()=>{expect(screenAccess('se',7)).toBe('full');expect(screenAccess('tl',7)).toBe('full');expect(screenAccess('sm',7)).toBe('read');expect(screenAccess('adm',7)).toBe('none');expect(screenAccess('dm',7)).toBe('none');expect(screenAccess('dir',7)).toBe('none');});
  it('digital marketing cannot read lead details',()=>expect(screenAccess('dm',3)).toBe('none'));

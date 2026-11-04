@@ -8,7 +8,8 @@ import { roleLabels, screenAccess, workspaces, workspaceAllowed } from '@/lib/ro
 import { SignOut } from '@/components/SignOut';
 import { Button } from '@/components/ui/button';
 import { BriefcaseBusiness } from 'lucide-react';
-import {canWriteLeads} from '@/lib/lead-rules';
+import {canWriteLeads,ticketLabels,usesTicketMode} from '@/lib/lead-rules';
+import {setTicketMode,useTicketMode} from '@/lib/ticket-mode';
 
 const nav = [
   { to: "/dashboard", label: "Beranda", icon: Home, screen:1 },
@@ -21,7 +22,7 @@ const nav = [
 export function AppShell({ title, subtitle, children, hideFab }: { title: string; subtitle?: string | undefined; children: ReactNode; hideFab?: boolean }) {
   const { pathname } = useLocation();
   const {data:account}=useSuspenseQuery(accountOptions);
-  const role=account.role;
+  const role=account.role,ticketMode=useTicketMode();
   const visibleNav=nav.filter(n=>role&&screenAccess(role,n.screen)!=='none');
   const canActivity=canWriteLeads(role);
   const active = (to: string) => pathname.startsWith(to);
@@ -61,7 +62,7 @@ export function AppShell({ title, subtitle, children, hideFab }: { title: string
               <h1 className="text-xl font-bold tracking-tight">{title}</h1>
               {subtitle && <p className="text-[13px] text-muted-foreground">{subtitle}</p>}
             </div>
-            <SignOut/>
+            <div className="flex items-center gap-1">{usesTicketMode(role)&&ticketMode&&<Button variant="outline" className="h-11" onClick={()=>setTicketMode(null)}>{ticketLabels[ticketMode]}</Button>}<SignOut/></div>
           </div>
         </header>
         <div className="mx-auto max-w-5xl px-5 py-5 md:px-10 md:py-8"><div className="mb-5 flex gap-2 overflow-x-auto md:hidden">{Object.entries(workspaces).filter(([key])=>role&&workspaceAllowed(role,key as keyof typeof workspaces)).map(([key,w])=><Button variant="outline" className="h-11 shrink-0" asChild key={key}><Link to="/ruang/$feature" params={{feature:key}}>{w.title}</Link></Button>)}</div>{children}</div>

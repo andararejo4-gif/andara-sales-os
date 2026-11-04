@@ -1,12 +1,19 @@
 import {describe,it,expect} from 'vitest';
 import {roles} from '@/lib/roles';
-import {canWriteLeads,canVerifyLeads,canApplyMaintenance,leadInput,leadSources,analyticsInput} from '@/lib/lead-rules';
+import {canWriteLeads,canVerifyLeads,canApplyMaintenance,leadInput,leadSources,analyticsInput,ticketClassOf,usesTicketMode,LARGE_TICKET_THRESHOLD,sourcesFor,sourceLabel} from '@/lib/lead-rules';
 
 describe('Master update rules',()=>{
- it('only ADM and TL verify lead values',()=>{for(const role of roles)expect(canVerifyLeads(role)).toBe(['adm','tl'].includes(role));});
+ it('only ADM and TL verify lead values',()=>{for(const role of roles)expect(canVerifyLeads(role)).toBe(['adm','tl','tl_2'].includes(role));});
  it('IT cannot directly create or update leads',()=>expect(canWriteLeads('it')).toBe(false));
  it('IT applies only an SM-approved request',()=>{expect(canApplyMaintenance('it','pending')).toBe(false);expect(canApplyMaintenance('it','approved')).toBe(true);expect(canApplyMaintenance('it','applied')).toBe(false);expect(canApplyMaintenance('se','approved')).toBe(false);});
  it('requires prospect name, phone and address',()=>{const valid={prospect_name:'Angga',phone:'081234567890',address:'Klaten',source:'Call',status:'LEAD'};expect(leadInput.safeParse(valid).success).toBe(true);for(const key of ['prospect_name','phone','address'])expect(leadInput.safeParse({...valid,[key]:''}).success).toBe(false);});
  it('accepts all five required lead sources',()=>expect(leadSources).toEqual(['Day-to-day','Call','Chat','Posting','Indoor']));
  it('rejects executable analytics links',()=>{expect(analyticsInput.safeParse({label:'Analitik',url:'javascript:alert(1)'}).success).toBe(false);expect(analyticsInput.safeParse({label:'Analitik',url:'https://business.facebook.com/latest/insights'}).success).toBe(true);});
+ it('exactly 500 jt stays regular and one rupiah above is large',()=>{expect(ticketClassOf(LARGE_TICKET_THRESHOLD)).toBe('REGULER');expect(ticketClassOf(LARGE_TICKET_THRESHOLD+1)).toBe('BESAR');expect(ticketClassOf(0)).toBe('REGULER');});
+ it('only SE and TL choose a ticket class',()=>{for(const role of roles)expect(usesTicketMode(role)).toBe(['se','tl','sales_2','tl_2'].includes(role));});
+ it('lead input defaults to regular and rejects unknown classes',()=>{const valid={prospect_name:'Angga',phone:'081234567890',address:'Klaten',source:'Call',status:'LEAD'};expect(leadInput.parse(valid).kelas).toBe('REGULER');expect(leadInput.parse({...valid,source:'Indoor',kelas:'BESAR',nominal:600_000_000}).kelas).toBe('BESAR');expect(leadInput.safeParse({...valid,kelas:'XL'}).success).toBe(false);});
+ it('large tickets only offer Posting and Indoor, regular tickets offer every source',()=>{expect(sourcesFor('BESAR')).toEqual(['Posting','Indoor']);expect(sourcesFor('REGULER')).toEqual([...leadSources]);});
+ it('large tickets reject D2D, Call and Chat sources',()=>{const base={prospect_name:'Angga',phone:'081234567890',address:'Klaten',status:'LEAD',kelas:'BESAR',nominal:600_000_000};for(const source of ['Day-to-day','Call','Chat'])expect(leadInput.safeParse({...base,source}).success).toBe(false);for(const source of ['Posting','Indoor'])expect(leadInput.safeParse({...base,source}).success).toBe(true);});
+ it('nominal must match the ticket class on both sides of the 500 jt limit',()=>{const base={prospect_name:'Angga',phone:'081234567890',address:'Klaten',source:'Indoor',status:'LEAD'};expect(leadInput.safeParse({...base,kelas:'REGULER',nominal:500_000_000}).success).toBe(true);expect(leadInput.safeParse({...base,kelas:'REGULER',nominal:500_000_001}).success).toBe(false);expect(leadInput.safeParse({...base,kelas:'BESAR',nominal:500_000_000}).success).toBe(false);expect(leadInput.safeParse({...base,kelas:'BESAR',nominal:500_000_001}).success).toBe(true);expect(leadInput.safeParse({...base,nominal:-1}).success).toBe(false);});
+ it('Day-to-day is shown as Door to Door while the stored value stays unchanged',()=>{expect(sourceLabel('Day-to-day')).toBe('Door to Door (D2D)');expect(sourceLabel('Call')).toBe('Call');});
 });

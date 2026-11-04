@@ -4,7 +4,6 @@ import { ArrowRight, Eye, EyeOff, LockKeyhole, Mail } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { supabase } from '@/integrations/supabase/client';
-import { lovable } from '@/integrations/lovable/index';
 import { roleLabels } from '@/lib/roles';
 export function Login() {
  const navigate=useNavigate();
@@ -16,9 +15,6 @@ export function Login() {
    if(forgot){const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/reset-password'});if(error)throw error;setSent(true);}
    else {const {error}=await supabase.auth.signInWithPassword({email,password});if(error)throw error;await navigate({to:'/dashboard',replace:true});}
   }catch{setError(forgot?'Email pemulihan belum terkirim. Silakan coba lagi.':'Email atau kata sandi tidak sesuai, atau akun belum dikonfirmasi.');}finally{setBusy(false);}
- }
- async function oauth(provider:'google'){
-  setBusy(true);setError('');try{const result=await lovable.auth.signInWithOAuth(provider,{redirect_uri:window.location.origin+'/auth'});if(result.error)throw result.error;if(!result.redirected)await navigate({to:'/dashboard',replace:true});}catch{setError('Login belum berhasil. Silakan coba lagi.');}finally{setBusy(false);}
  }
  return <main className="flex min-h-screen flex-col bg-background">
   <header className="flex items-center justify-between border-b border-border px-6 py-5 md:px-10"><div className="flex items-center gap-3"><img src="/icon-512.png" alt="Andara" className="size-10 rounded-lg"/><span className="font-bold">Andara <span className="font-medium text-muted-foreground">Sales OS</span></span></div><LockKeyhole className="size-5 text-muted-foreground"/></header>
@@ -34,7 +30,6 @@ export function Login() {
     <Button disabled={busy} type="submit" className="h-12 w-full text-[15px]">{busy?'Mohon tunggu…':forgot?'Kirim tautan pemulihan':'Masuk'}<ArrowRight/></Button>
    </form>
    <Button variant="link" className="mt-2 h-11 px-0" onClick={()=>{setForgot(!forgot);setError('');setSent(false);}}>{forgot?'Kembali ke login':'Lupa kata sandi?'}</Button>
-   {!forgot&&<div className="mt-5 space-y-3 border-t border-border pt-5"><Button variant="outline" disabled={busy} className="h-12 w-full bg-card" onClick={()=>oauth('google')}>Masuk dengan Google</Button></div>}
    <div className="mt-8 border-t border-border pt-5"><p className="text-[13px] font-semibold text-muted-foreground">Enam peran · satu akun masing-masing</p><p className="mt-2 text-[13px] leading-relaxed text-muted-foreground">{Object.values(roleLabels).join(' · ')}</p></div>
   </div><footer className="px-6 pb-6 text-center text-[13px] text-muted-foreground">Internal & rahasia · Andara Rejo Makmur</footer>
  </main>;

@@ -1,15 +1,15 @@
 import {type DailyReport,reportCsv,reportHeaders,reportRows} from '@/lib/daily-report';
 
 export type ReportFormat='pdf'|'xlsx'|'csv';
-export async function createReportFile(report:DailyReport,day:string,format:ReportFormat):Promise<Blob>{
+export async function createReportFile(report:DailyReport,day:string,format:ReportFormat,title='Laporan Harian'):Promise<Blob>{
  if(format==='csv')return new Blob([reportCsv(report)],{type:'text/csv;charset=utf-8'});
  const rows=reportRows(report);
  if(format==='xlsx'){
   const {default:ExcelJS}=await import('exceljs');
   const workbook=new ExcelJS.Workbook();
   workbook.creator='Andara Sales OS';
-  const sheet=workbook.addWorksheet('Laporan Harian');
-  sheet.addRow(['ANDARA SALES OS — Laporan Harian',day]);sheet.addRow(reportHeaders);
+  const sheet=workbook.addWorksheet('Laporan');
+  sheet.addRow([`ANDARA SALES OS — ${title}`,day]);sheet.addRow(reportHeaders);
   rows.forEach(row=>sheet.addRow(row));
   sheet.getRow(2).font={bold:true,name:'Arial'};
   sheet.columns.forEach(column=>{column.width=24;});
@@ -21,7 +21,7 @@ export async function createReportFile(report:DailyReport,day:string,format:Repo
  const [{jsPDF},{default:autoTable}]=await Promise.all([import('jspdf'),import('jspdf-autotable')]);
  const doc=new jsPDF({orientation:'landscape'});
  doc.setFontSize(16);doc.text('ANDARA SALES OS',14,16);doc.setFontSize(10);
- doc.text(`Laporan Harian | ${day} (WIB) | ${report.staff.length} staf | ${rows.length} catatan`,14,24);
+ doc.text(`${title} | ${day} (WIB) | ${report.staff.length} staf | ${rows.length} catatan`,14,24);
  autoTable(doc,{head:[reportHeaders],body:rows,startY:30,styles:{fontSize:8,overflow:'linebreak'},theme:'grid',didDrawPage:()=>{doc.setFontSize(8);doc.text(`Andara Sales OS | ${day} | Halaman ${doc.getNumberOfPages()}`,14,doc.internal.pageSize.height-8);}});
  return doc.output('blob');
 }

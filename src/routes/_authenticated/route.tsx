@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, redirect } from '@tanstack/react-router';
 import { supabase } from '@/integrations/supabase/client';
 import { accountOptions } from '@/lib/account';
+import { TicketModeGate } from '@/components/TicketModeGate';
 export const Route=createFileRoute('/_authenticated')({
  ssr:false,
  beforeLoad:async({context})=>{
@@ -8,5 +9,6 @@ export const Route=createFileRoute('/_authenticated')({
   if(error||!data.user)throw redirect({to:'/auth',replace:true});
   const account=await context.queryClient.fetchQuery(accountOptions);
   return {account};
- },component:Outlet,
+ },component:Layout,
 });
+function Layout(){const {account}=Route.useRouteContext();return <TicketModeGate role={account.role}><Outlet/></TicketModeGate>;}
